@@ -5,3 +5,4 @@ env/*
 todo.txt
 converter.py
 geckodriver.log
+*.glf
