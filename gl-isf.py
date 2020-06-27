@@ -84,3 +84,41 @@ def progress_bar(num_processing, num_games, eta):
         return(f"[{Fore.GREEN}:::{Fore.YELLOW}::::{Fore.RED}::.{Style.RESET_ALL}]{stat_counter}")
     elif percentage >= 95 and percentage <= 100:
         return(f"[{Fore.GREEN}:::{Fore.YELLOW}::::{Fore.RED}:::{Style.RESET_ALL}]{stat_counter}")
+
+def tester():
+    num_processing = 0
+    last_tt = 0
+    time_sum = 0
+
+    game_title = "Doom 8"
+    game_price = 59.99
+    num_games = 29
+    print(f"[{Fore.CYAN}GL-isf/init{Style.RESET_ALL}] Initializing {Style.BRIGHT}{app_info.name}{Style.RESET_ALL} v{Style.BRIGHT}{app_info.version}{Style.RESET_ALL} by {Style.BRIGHT}{app_info.by}{Style.RESET_ALL}")
+    for counter in range(num_games):
+        num_processing += 1
+        tic = time.time()
+
+        time_sum += last_tt
+        if last_tt == 0:
+            eta = "~"
+            eta_avg = "~"
+        else:
+            eta = round((num_games - num_processing * last_tt) / 60, 2)
+            # eta_avg = round(((num_games - num_processing) * (time_sum / (num_processing - 1))) / 60, 2)
+            eta_avg = round((num_games - num_processing) * (time_sum / (num_processing - 1)), 2)
+            eta_avg = time_convert(eta_avg)
+
+        print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/import{Style.RESET_ALL}] {Style.BRIGHT}Importing{Style.RESET_ALL} game info  ... ", flush=True, end="")
+        print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
+        print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/scrape{Style.RESET_ALL}] {Style.BRIGHT}Scraping{Style.RESET_ALL} AKS.url of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
+        print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
+        time.sleep(3)
+        print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/scrape{Style.RESET_ALL}] {Style.BRIGHT}Scraping{Style.RESET_ALL} AKS.lowest.price of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
+        print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
+        toc = time.time()
+        tictoc = round(toc - tic, 2)
+        last_tt = tictoc
+        print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/proc-m{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {Fore.YELLOW}{game_price}e{Style.RESET_ALL} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}")
+    return()
+# print(tester())
+# exit()
