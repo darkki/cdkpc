@@ -13,10 +13,22 @@ from colorama import init # module imported for color support
 init()
 from colorama import Fore,Back,Style
 
+import argparse
+
 class app_info:
+    shortname = "GL-isf"
     name = "GameList-import.scrape.format"
+    description = "imports, scrapes and formats your game list!"
     version = "20200623|Dev"
     by = "darkk!"
+
+parser = argparse.ArgumentParser(prog=app_info.shortname, description=app_info.description)
+parser.add_argument("input", help="filename of gamelist to read")
+# parser.add_argument("input", nargs="?", type=argparse.FileType('r'), help="filename of gamelist to read", default="gamelist.glf")
+parser.add_argument("-v", "--version", action="version", version=app_info.version)
+# parser.add_argument("-m", "--mono", help="output in monochrome (no colors)", action="store_false")
+args = parser.parse_args()
+# print(args.mono)
 
 app_ascii = """
                       ________.____              .__         _____ 
@@ -250,7 +262,7 @@ elif success_percentage >= 60:
 else:
     success_percentage = f"{Fore.RED}{success_percentage}%{Style.RESET_ALL}"
 
-print(f"\n[{Fore.CYAN}GL-isf/fin{Style.RESET_ALL}] Operation {Style.BRIGHT}completed{Style.RESET_ALL} in {Style.BRIGHT}{time_convert(tictocbig)}{Style.RESET_ALL}! Success ratio is {success_percentage} - {Fore.GREEN}{success_counter}{Style.RESET_ALL} succesful, {Fore.YELLOW}{warning_counter}{Style.RESET_ALL} warnings and {Fore.RED}{error_counter}{Style.RESET_ALL} errors.  Your data is saved in {Style.MAGENTA}save_file.ext{Style.RESET_ALL}\n")
+print(f"\n[{Fore.CYAN}GL-isf/fin{Style.RESET_ALL}] Operation {Style.BRIGHT}completed{Style.RESET_ALL} in {Style.BRIGHT}{time_convert(tictocbig)}{Style.RESET_ALL}! Success ratio is {success_percentage} - {Fore.GREEN}{success_counter}{Style.RESET_ALL} succesful, {Fore.YELLOW}{warning_counter}{Style.RESET_ALL} warnings and {Fore.RED}{error_counter}{Style.RESET_ALL} errors.  Your data is saved in {Fore.MAGENTA}save_file.ext{Style.RESET_ALL}\n")
 print(f"{Fore.CYAN}{app_ascii}{Style.RESET_ALL}")
 print(f"Thanks for using {Style.BRIGHT}{app_info.name}{Style.RESET_ALL} v{Style.BRIGHT}{app_info.version}{Style.RESET_ALL} by {Style.BRIGHT}{app_info.by}{Style.RESET_ALL}")
 
