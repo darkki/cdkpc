@@ -223,9 +223,11 @@ for line in glf_reader:
         success_counter += 1
     toc = time.time()
     tictoc = round(toc - tic, 2)
+    tac = round(toc - ticbig, 2)
     last_tt = tictoc
     # print(game_price)
-    print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/proc-m{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {game_price_str} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}")
+    # print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/proc-m{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {game_price_str} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}")
+    print(f"{Style.BRIGHT}-->{Style.RESET_ALL} [{Fore.CYAN}GL-isf/sgp-cmsg{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {game_price_str} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}. {Style.BRIGHT}{time_convert(tac)}{Style.RESET_ALL} elapsed and {Style.BRIGHT}{eta_avg}{Style.RESET_ALL} left.")
 glf_reader.close()
 
 tocbig = time.time()
