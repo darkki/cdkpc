@@ -26,7 +26,7 @@ app_ascii = """
                      \______  |_______ \         |__/____  >|__|   
                             \/        \/                 \/        
                             """
-print(app_ascii)
+print(f"{Fore.CYAN}{app_ascii}{Style.RESET_ALL}")
 
 ticbig = time.time()
 
@@ -251,7 +251,7 @@ else:
     success_percentage = f"{Fore.RED}{success_percentage}%{Style.RESET_ALL}"
 
 print(f"\n[{Fore.CYAN}GL-isf/fin{Style.RESET_ALL}] Operation {Style.BRIGHT}completed{Style.RESET_ALL} in {Style.BRIGHT}{time_convert(tictocbig)}{Style.RESET_ALL}! Success ratio is {success_percentage} - {Fore.GREEN}{success_counter}{Style.RESET_ALL} succesful, {Fore.YELLOW}{warning_counter}{Style.RESET_ALL} warnings and {Fore.RED}{error_counter}{Style.RESET_ALL} errors.  Your data is saved in {Style.MAGENTA}save_file.ext{Style.RESET_ALL}\n")
-print(app_ascii)
+print(f"{Fore.CYAN}{app_ascii}{Style.RESET_ALL}")
 print(f"Thanks for using {Style.BRIGHT}{app_info.name}{Style.RESET_ALL} v{Style.BRIGHT}{app_info.version}{Style.RESET_ALL} by {Style.BRIGHT}{app_info.by}{Style.RESET_ALL}")
 
 # exstr = "Supraland -- https://store.steampowered.com/app/813630/"
