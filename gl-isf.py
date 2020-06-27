@@ -18,6 +18,14 @@ class app_info:
     version = "20200623|Dev"
     by = "darkk!"
 
+ticbig = time.time()
+
+filereader = open("testlist.glf", "r")
+num_games = 0
+for line in filereader:
+    num_games += 1
+filereader.close()
+
 def time_convert(seconds):
     seconds = seconds % (24 * 3600)
     hour = seconds // 3600
@@ -122,3 +130,149 @@ def tester():
     return()
 # print(tester())
 # exit()
+
+print(f"[{Fore.CYAN}GL-isf/init{Style.RESET_ALL}] Initializing {Style.BRIGHT}{app_info.name}{Style.RESET_ALL} v{Style.BRIGHT}{app_info.version}{Style.RESET_ALL} by {Style.BRIGHT}{app_info.by}{Style.RESET_ALL}")
+
+num_processing = 0
+last_tt = 0
+time_sum = 0
+glf_reader = open("testlist.glf", "r")
+error_counter = 0
+warning_counter = 0
+success_counter = 0
+for line in glf_reader:
+    tic = time.time()
+    num_processing += 1
+    time_sum += last_tt
+    if last_tt == 0:
+        eta = "~"
+        eta_avg = "~"
+    else:
+        eta = round(((num_games - num_processing) * last_tt) / 60, 2)
+        # eta_avg = round(((num_games - num_processing) * (time_sum / (num_processing - 1))) / 60, 2)
+        eta_avg = round((num_games - num_processing) * (time_sum / (num_processing - 1)), 2)
+        eta_avg = time_convert(eta_avg)
+    print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/import{Style.RESET_ALL}] {Style.BRIGHT}Importing{Style.RESET_ALL} game info  ... ", flush=True, end="")
+    stripped_line = line.strip()
+    game_title = ""
+    steam_url = ""
+    division = False
+    countdown = 4
+    for idx in range(len(stripped_line)):
+        char = stripped_line[idx]
+        try:
+            if stripped_line[idx + 1] == " " and stripped_line[idx + 2] == "-" and stripped_line[idx + 4] == " ":
+                division = True
+        except:
+            pass
+        if division == True:
+            countdown -= 1
+        if division == True and countdown < 0:
+            steam_url += char
+        elif countdown >= 3:
+            game_title += char
+    print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
+    # print(f"title: {game_title} url: {steam_url}")
+
+    print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/scrape{Style.RESET_ALL}] {Style.BRIGHT}Scraping{Style.RESET_ALL} AKS.url of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
+    driver = webdriver.Firefox()
+    driver.get("https://www.allkeyshop.com/blog/catalogue/")
+    elem = driver.find_element_by_id('search-form-keywords')
+    elem.clear()
+    elem.send_keys(game_title)
+    time.sleep(2)
+    first_match = driver.find_element_by_class_name('search-results-row-link')
+    first_match.send_keys(Keys.RETURN)
+    time.sleep(1)
+    aks_url = driver.current_url
+    assert "No results found." not in driver.page_source
+    driver.close()
+    if "catalogue" in aks_url:
+        print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
+        error_counter += 1
+    else:
+        print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
+    # print(aks_url)
+
+    print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/scrape{Style.RESET_ALL}] {Style.BRIGHT}Scraping{Style.RESET_ALL} AKS.lowest.price of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
+    aks_proc = urllib.request.urlopen(aks_url).read()
+    soup = BeautifulSoup(aks_proc, "lxml")
+    pricefinder = soup.find(itemprop="lowPrice")
+    ff = False
+    sf = False
+    game_price = ""
+    for char in str(pricefinder):
+        if char == '"' and ff == False:
+            ff = True
+        elif char == '"' and ff == True:
+            sf = True
+        elif ff == True and sf == False:
+            game_price += char
+        else:
+            pass
+    if not game_price and "catalogue" in aks_url:
+        print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
+        game_price_str = f"{Fore.RED}ERROR!{Style.RESET_ALL}"
+    elif not game_price:
+        print(f"[{Fore.YELLOW}NOT_FOUND!{Style.RESET_ALL}]")
+        game_price_str = f"{Fore.YELLOW}DMC!{Style.RESET_ALL}"
+        warning_counter += 1
+    else:
+        print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
+        game_price_str = f"{Fore.GREEN}{game_price}e{Style.RESET_ALL}"
+        success_counter += 1
+    toc = time.time()
+    tictoc = round(toc - tic, 2)
+    last_tt = tictoc
+    # print(game_price)
+    print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/proc-m{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {game_price_str} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}")
+glf_reader.close()
+
+tocbig = time.time()
+tictocbig = round(tocbig - ticbig, 2)
+print(f"\n[{Fore.CYAN}GL-isf/fin{Style.RESET_ALL}] Operation {Style.BRIGHT}completed{Style.RESET_ALL} in {Style.BRIGHT}{time_convert(tictocbig)}{Style.RESET_ALL}! Your data is saved in {Style.BRIGHT}save_file.ext{Style.RESET_ALL}\n")
+
+
+# exstr = "Supraland -- https://store.steampowered.com/app/813630/"
+# g_title = ""
+# s_url = ""
+# division = False
+# c_down = 4
+# for idx in range(len(exstr)):
+#     char = exstr[idx]
+#     try:
+#         if exstr[idx + 1] == " " and exstr[idx + 2] == "-" and exstr[idx + 4] == " ":
+#             division = True
+#     except:
+#         pass
+#     if division == True:
+#         c_down -= 1
+#     if division == True and c_down < 0:
+#         s_url += char
+#     elif c_down >= 3:
+#         g_title += char
+
+# print(f"title: {g_title} - url: {s_url}")
+
+# glf_reader = open("testlist.glf", "r")
+# for line in glf_reader:
+#     stripped_line = line.strip()
+#     game_title = ""
+#     steam_url = ""
+#     division = False
+#     countdown = 4
+#     for idx in range(len(stripped_line)):
+#         char = stripped_line[idx]
+#         try:
+#             if stripped_line[idx + 1] == " " and stripped_line[idx + 2] == "-" and stripped_line[idx + 4] == " ":
+#                 division = True
+#         except:
+#             pass
+#         if division == True:
+#             countdown -= 1
+#         if division == True and countdown < 0:
+#             steam_url += char
+#         elif countdown >= 3:
+#             game_title += char
+#     print(f"title: {game_title} url: {steam_url}")
+# glf_reader.close()
