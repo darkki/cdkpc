@@ -18,6 +18,16 @@ class app_info:
     version = "20200623|Dev"
     by = "darkk!"
 
+app_ascii = """
+                      ________.____              .__         _____ 
+                     /  _____/|    |             |__| ______/ ____\ 
+                    /   \  ___|    |      ______ |  |/  ___\   __\ 
+                    \    \_\  |    |___  /_____/ |  |\___ \ |  |   
+                     \______  |_______ \         |__/____  >|__|   
+                            \/        \/                 \/        
+                            """
+print(app_ascii)
+
 ticbig = time.time()
 
 filereader = open("testlist.glf", "r")
@@ -101,7 +111,7 @@ def tester():
     game_title = "Doom 8"
     game_price = 59.99
     num_games = 29
-    print(f"[{Fore.CYAN}GL-isf/init{Style.RESET_ALL}] Initializing {Style.BRIGHT}{app_info.name}{Style.RESET_ALL} v{Style.BRIGHT}{app_info.version}{Style.RESET_ALL} by {Style.BRIGHT}{app_info.by}{Style.RESET_ALL}")
+    print(f"[{Fore.CYAN}GL-isf/init{Style.RESET_ALL}] Initializing {Style.BRIGHT}{app_info.name}{Style.RESET_ALL} v{Style.BRIGHT}{app_info.version}{Style.RESET_ALL} by {Style.BRIGHT}{app_info.by}{Style.RESET_ALL}\n")
     for counter in range(num_games):
         num_processing += 1
         tic = time.time()
@@ -241,7 +251,8 @@ else:
     success_percentage = f"{Fore.RED}{success_percentage}%{Style.RESET_ALL}"
 
 print(f"\n[{Fore.CYAN}GL-isf/fin{Style.RESET_ALL}] Operation {Style.BRIGHT}completed{Style.RESET_ALL} in {Style.BRIGHT}{time_convert(tictocbig)}{Style.RESET_ALL}! Success ratio is {success_percentage} - {Fore.GREEN}{success_counter}{Style.RESET_ALL} succesful, {Fore.YELLOW}{warning_counter}{Style.RESET_ALL} warnings and {Fore.RED}{error_counter}{Style.RESET_ALL} errors.  Your data is saved in {Style.MAGENTA}save_file.ext{Style.RESET_ALL}\n")
-
+print(app_ascii)
+print(f"Thanks for using {Style.BRIGHT}{app_info.name}{Style.RESET_ALL} v{Style.BRIGHT}{app_info.version}{Style.RESET_ALL} by {Style.BRIGHT}{app_info.by}{Style.RESET_ALL}")
 
 # exstr = "Supraland -- https://store.steampowered.com/app/813630/"
 # g_title = ""
