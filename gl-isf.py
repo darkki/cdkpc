@@ -232,7 +232,15 @@ glf_reader.close()
 
 tocbig = time.time()
 tictocbig = round(tocbig - ticbig, 2)
-print(f"\n[{Fore.CYAN}GL-isf/fin{Style.RESET_ALL}] Operation {Style.BRIGHT}completed{Style.RESET_ALL} in {Style.BRIGHT}{time_convert(tictocbig)}{Style.RESET_ALL}! Your data is saved in {Style.BRIGHT}save_file.ext{Style.RESET_ALL}\n")
+success_percentage = (success_counter + warning_counter) / num_games * 100
+if success_percentage >= 80:
+    success_percentage = f"{Fore.GREEN}{success_percentage}%{Style.RESET_ALL}"
+elif success_percentage >= 60:
+    success_percentage = f"{Fore.YELLOW}{success_percentage}%{Style.RESET_ALL}"
+else:
+    success_percentage = f"{Fore.RED}{success_percentage}%{Style.RESET_ALL}"
+
+print(f"\n[{Fore.CYAN}GL-isf/fin{Style.RESET_ALL}] Operation {Style.BRIGHT}completed{Style.RESET_ALL} in {Style.BRIGHT}{time_convert(tictocbig)}{Style.RESET_ALL}! Success ratio is {success_percentage} - {Fore.GREEN}{success_counter}{Style.RESET_ALL} succesful, {Fore.YELLOW}{warning_counter}{Style.RESET_ALL} warnings and {Fore.RED}{error_counter}{Style.RESET_ALL} errors.  Your data is saved in {Style.MAGENTA}save_file.ext{Style.RESET_ALL}\n")
 
 
 # exstr = "Supraland -- https://store.steampowered.com/app/813630/"
