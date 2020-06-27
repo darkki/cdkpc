@@ -19,7 +19,7 @@ class app_info:
     shortname = "GL-isf"
     name = "GameList-import.scrape.format"
     description = "imports, scrapes and formats your game list!"
-    version = "20200623|Dev"
+    version = "20200627|Dev"
     by = "darkk!"
 
 parser = argparse.ArgumentParser(prog=app_info.shortname, description=app_info.description)
