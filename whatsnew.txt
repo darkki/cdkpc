@@ -1,0 +1,23 @@
+GL-isf v20200623|Dev
+- Imptoved ETA calculation and formatting
+- Improved UI [minor]
+- 
+
+GL-isf v20200623|Dev
+- Added progress bar and stats
+- Improved UI [major]
+- Added colors
+
+GL-isf v20200618|Dev
+- Formed UI base
+- Completed url scraping
+
+GL-isf v20200618|Dev
+- Added rudimentary url scraping
+
+GL-isf v20200618|Dev
+- Added price scraping
+- Added game info importing
+
+GL-isf v20200610|Dev
+- Devlopment started!

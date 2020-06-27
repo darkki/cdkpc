@@ -12,3 +12,8 @@ import time
 from colorama import init # module imported for color support
 init()
 from colorama import Fore,Back,Style
+
+class app_info:
+    name = "GameList-import.scrape.format"
+    version = "20200623|Dev"
+    by = "darkk!"
