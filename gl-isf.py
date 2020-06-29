@@ -23,12 +23,12 @@ class app_info:
     by = "darkk!"
 
 parser = argparse.ArgumentParser(prog=app_info.shortname, description=app_info.description)
-parser.add_argument("input", help="filename of gamelist to read")
-# parser.add_argument("input", nargs="?", type=argparse.FileType('r'), help="filename of gamelist to read", default="gamelist.glf")
-parser.add_argument("-v", "--version", action="version", version=app_info.version)
-# parser.add_argument("-m", "--mono", help="output in monochrome (no colors)", action="store_false")
+parser.add_argument('input_filename", help="filename of gamelist to read [ formatting: "gamename -- steam_url" ]')
+### parser.add_argument("input", nargs="?", type=argparse.FileType('r'), help="filename of gamelist to read", default="gamelist.glf")
+parser.add_argument("-v", "--version", action="version", version="[GL-isf] GameList-import.scrape.format v" + app_info.version + " by " + app_info.by)
+### parser.add_argument("-m", "--mono", help="output in monochrome (no colors)", action="store_false")
 args = parser.parse_args()
-# print(args.mono)
+### print(args.input_filename)
 
 app_ascii = """
                       ________.____              .__         _____ 
