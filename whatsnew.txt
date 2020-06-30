@@ -1,5 +1,13 @@
+GL-isf v0.10a
+- Performance of URL scraping speed improved [major]
+- Added configuration display to UI
+- Added output list formatting
+- Added output file saving
+- Updated parser
+- Updated UI [minor]
+
 GL-isf v20200627|Dev
-- Imptoved ETA calculation and formatting
+- Improved ETA calculation and formatting
 - Improved/Fixed UI [minor]
 - Added argument parsing
 
