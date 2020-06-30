@@ -202,10 +202,11 @@ for line in glf_reader:
     elem = driver.find_element_by_id('search-form-keywords')
     elem.clear()
     elem.send_keys(game_title)
-    time.sleep(2)
+    # time.sleep(2)
+    element = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "search-results-row-link")))
     first_match = driver.find_element_by_class_name('search-results-row-link')
     first_match.send_keys(Keys.RETURN)
-    time.sleep(1)
+    time.sleep(0.5)
     aks_url = driver.current_url
     assert "No results found." not in driver.page_source
     driver.close()
