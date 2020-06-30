@@ -23,12 +23,19 @@ class app_info:
     by = "darkk!"
 
 parser = argparse.ArgumentParser(prog=app_info.shortname, description=app_info.description)
-parser.add_argument('input_filename", help="filename of gamelist to read [ formatting: "gamename -- steam_url" ]')
-### parser.add_argument("input", nargs="?", type=argparse.FileType('r'), help="filename of gamelist to read", default="gamelist.glf")
 parser.add_argument("-v", "--version", action="version", version="[GL-isf] GameList-import.scrape.format v" + app_info.version + " by " + app_info.by)
+# print(f"[{app_info.shortname}] {app_info.name} v{app_info.version} by {app_info.by}")
+parser.add_argument("input_file", help="filename of gamelist to read")
+parser.add_argument("output_file", nargs="?", help="filename of formatted list to write (default: [.\gamelist.glf])", default=".\gamelist.glf")
+# parser.add_argument("pricetable", nargs="?", help="filename of pricetable to read", default="none")
+parser.add_argument("-f", "--format", nargs="?", help="formatting of output_file [reddit, phpbb] (default: [reddit])", default="reddit")
+### parser.add_argument("input", nargs="?", type=argparse.FileType('r'), help="filename of gamelist to read", default="gamelist.glf")
 ### parser.add_argument("-m", "--mono", help="output in monochrome (no colors)", action="store_false")
 args = parser.parse_args()
-### print(args.input_filename)
+
+# print(args.input_file)
+# print(args.output_file)
+# print(args.format)
 
 app_ascii = """
                       ________.____              .__         _____ 
