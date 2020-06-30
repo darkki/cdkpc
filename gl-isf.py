@@ -273,6 +273,12 @@ for line in glf_reader:
     last_tt = tictoc
     # print(game_price)
     # print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/proc-m{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {game_price_str} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}")
+
+    filewriter = open(args.output_file, "a")
+    formatted_text = f"* [{game_title}]({steam_url}) - **{game_price}e**  "
+    filewriter.write(str(formatted_text) + "\n")
+    filewriter.close()
+
     print(f"{Style.BRIGHT}-->{Style.RESET_ALL} [{Fore.CYAN}GL-isf/sgp-cmsg{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {game_price_str} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}. {Style.BRIGHT}{time_convert(tac)}{Style.RESET_ALL} elapsed and {Style.BRIGHT}{eta_avg}{Style.RESET_ALL} left.")
 glf_reader.close()
 
