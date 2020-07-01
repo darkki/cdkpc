@@ -319,8 +319,12 @@ elif success_percentage >= 60:
     success_percentage = f"{Fore.YELLOW}{success_percentage}%{Style.RESET_ALL}"
 else:
     success_percentage = f"{Fore.RED}{success_percentage}%{Style.RESET_ALL}"
+if success_percentage <= 99:
+    mcn_text = f'Please find "{Style.BRIGHT}MCN!{Style.RESET_ALL}" in {Style.BRIGHT}{args.output_file}{Style.RESET_ALL} for prices needed for manual check! (or do an re-run for those items / enable auto-recheck!)'
+else:
+    mcn_text = ""
 
-print(f"\n[{Fore.CYAN}GL-isf/fin{Style.RESET_ALL}] Operation {Style.BRIGHT}completed{Style.RESET_ALL} in {Style.BRIGHT}{time_convert(tictocbig)}{Style.RESET_ALL}! Success ratio is {success_percentage} - {Fore.GREEN}{success_counter}{Style.RESET_ALL} succesful, {Fore.YELLOW}{warning_counter}{Style.RESET_ALL} warnings and {Fore.RED}{error_counter}{Style.RESET_ALL} errors.  Your data is saved in {Fore.MAGENTA}save_file.ext{Style.RESET_ALL}\n")
+print(f"\n[{Fore.CYAN}GL-isf/fin{Style.RESET_ALL}] Operation {Style.BRIGHT}completed{Style.RESET_ALL} in {Style.BRIGHT}{time_convert(tictocbig)}{Style.RESET_ALL}! Success ratio is {success_percentage} - {Fore.GREEN}{success_counter}{Style.RESET_ALL} succesful, {Fore.YELLOW}{warning_counter}{Style.RESET_ALL} warnings and {Fore.RED}{error_counter}{Style.RESET_ALL} errors.  Your data is saved in {Style.BRIGHT}args.output_file{Style.RESET_ALL}. {mcn_text}\n")
 print(f"{Fore.CYAN}{app_ascii}{Style.RESET_ALL}")
 print(f"Thanks for using {Style.BRIGHT}{app_info.name}{Style.RESET_ALL} v{Style.BRIGHT}{app_info.version}{Style.RESET_ALL} by {Style.BRIGHT}{app_info.by}{Style.RESET_ALL}")
 
