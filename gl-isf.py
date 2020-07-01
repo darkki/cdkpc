@@ -280,10 +280,12 @@ for line in glf_reader:
             pass
     if not game_price and "catalogue" in aks_url:
         print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
-        game_price_str = f"{Fore.RED}ERROR!{Style.RESET_ALL}"
+        game_price_str = f"{Fore.RED}N/A{Style.RESET_ALL}"
+        game_price_format = "MCN!"
     elif not game_price:
         print(f"[{Fore.YELLOW}NOT_FOUND!{Style.RESET_ALL}]")
-        game_price_str = f"{Fore.YELLOW}DMC!{Style.RESET_ALL}"
+        game_price_str = f"{Fore.RED}N/A{Style.RESET_ALL}"
+        game_price_format = "MCN!"
         warning_counter += 1
     else:
         print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
