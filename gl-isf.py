@@ -9,6 +9,7 @@ import datetime
 date_time_now = datetime.datetime.now()
 import time
 
+import os
 import os.path
 
 from colorama import init # module imported for color support
@@ -66,7 +67,7 @@ if os.path.isfile(args.output_file):
     print(f"[{Fore.CYAN}GL-isf/file_check{Style.RESET_ALL}] output_file {Style.BRIGHT}{args.output_file}{Style.RESET_ALL} {Fore.RED}already exists!{Style.RESET_ALL}")
     overwrite_answer = input(f"[{Fore.CYAN}GL-isf/query{Style.RESET_ALL}] Would you like to overwrite [{Fore.GREEN}Y{Style.RESET_ALL}/{Fore.RED}N{Style.RESET_ALL}]? ")
     if overwrite_answer == "Y":
-        pass
+        os.remove(args.output_file)
     elif overwrite_answer == "N":
         print(f"[{Fore.CYAN}GL-isf/quit{Style.RESET_ALL}] Cannot continue further. {Style.BRIGHT}EXITING! ...{Style.RESET_ALL}")
         exit()
@@ -296,8 +297,11 @@ for line in glf_reader:
     # print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/proc-m{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {game_price_str} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}")
 
     filewriter = open(args.output_file, "a")
-    formatted_text = f"* [{game_title}]({steam_url}) - **{game_price}e**  "
-    filewriter.write(str(formatted_text) + "\n")
+    if args.format == "reddit":
+        formatted_text = f"* [{game_title}]({steam_url}) - **{game_price}e**  "
+        filewriter.write(str(formatted_text) + "\n")
+    elif args.format == "phpbb":
+        pass
     filewriter.close()
 
     print(f"{Style.BRIGHT}-->{Style.RESET_ALL} [{Fore.CYAN}GL-isf/sgp-cmsg{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {game_price_str} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}. {Style.BRIGHT}{time_convert(tac)}{Style.RESET_ALL} elapsed and {Style.BRIGHT}{eta_avg}{Style.RESET_ALL} left.")
