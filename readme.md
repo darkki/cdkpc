@@ -34,3 +34,7 @@ optional arguments:
 
 *output_file*
 1. reddit: - game_title_with_steam_url - game_price(italics)  
+
+**[ Misc ]**
+
+- If price check has failed or price not found, then you should find games with price as "MCN!" in output_file and do manual check on those or re-run those items. (ability to do automatic re-check of failed items coming in future!)
