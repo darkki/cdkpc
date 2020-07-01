@@ -28,7 +28,8 @@ parser.add_argument("-v", "--version", action="version", version="[GL-isf] GameL
 parser.add_argument("input_file", help="filename of gamelist to read")
 parser.add_argument("output_file", nargs="?", help="filename of formatted list to write (default: [.\gamelist.glf])", default=".\gamelist.glf")
 # parser.add_argument("pricetable", nargs="?", help="filename of pricetable to read", default="none")
-parser.add_argument("-f", "--format", nargs="?", help="formatting of output_file [reddit, phpbb] (default: [reddit])", default="reddit")
+parser.add_argument("-f", "--format", nargs="?", help="formatting of output_file [reddit] (default: [reddit])", default="reddit")
+# parser.add_argument("-if", "--input_format", nargs="?", help="formatting of input_file [barter-1] (default: [barter-1])", default="barter-1")
 ### parser.add_argument("input", nargs="?", type=argparse.FileType('r'), help="filename of gamelist to read", default="gamelist.glf")
 ### parser.add_argument("-m", "--mono", help="output in monochrome (no colors)", action="store_false")
 args = parser.parse_args()
@@ -53,11 +54,11 @@ app_ascii_alt = """
  /_____/  /_____/  /_____/  \    \_\  |    |___  /_____/ |  |\___ \ |  |     /_____/  /_____/  /_____/ 
                              \______  |_______ \         |__/____  >|__|                               
                                     \/        \/                 \/                                    """
-print(f"{Fore.CYAN}{app_ascii}{Style.RESET_ALL}")
+print(f"{Fore.CYAN}{app_ascii_alt}{Style.RESET_ALL}")
 
 ticbig = time.time()
 
-filereader = open("testlist.glf", "r")
+filereader = open(args.input_file, "r")
 num_games = 0
 for line in filereader:
     num_games += 1
@@ -181,7 +182,7 @@ print(f"")
 num_processing = 0
 last_tt = 0
 time_sum = 0
-glf_reader = open("testlist.glf", "r")
+glf_reader = open(args.input_file, "r")
 error_counter = 0
 warning_counter = 0
 success_counter = 0
