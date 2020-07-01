@@ -9,6 +9,8 @@ import datetime
 date_time_now = datetime.datetime.now()
 import time
 
+import os.path
+
 from colorama import init # module imported for color support
 init()
 from colorama import Fore,Back,Style
@@ -55,6 +57,24 @@ app_ascii_alt = """
                              \______  |_______ \         |__/____  >|__|                               
                                     \/        \/                 \/                                    """
 print(f"{Fore.CYAN}{app_ascii_alt}{Style.RESET_ALL}")
+if os.path.isfile(args.input_file):
+    pass
+else:
+    print(f"[{Fore.CYAN}GL-isf/file_check{Style.RESET_ALL}] input_file {Style.BRIGHT}{args.input_file}{Style.RESET_ALL} {Fore.RED}does not exists!{Style.RESET_ALL}. Cannot continue further. {Style.BRIGHT}EXITING! ...{Style.RESET_ALL}")
+    exit()
+if os.path.isfile(args.output_file):
+    print(f"[{Fore.CYAN}GL-isf/file_check{Style.RESET_ALL}] output_file {Style.BRIGHT}{args.output_file}{Style.RESET_ALL} {Fore.RED}already exists!{Style.RESET_ALL}")
+    overwrite_answer = input(f"[{Fore.CYAN}GL-isf/query{Style.RESET_ALL}] Would you like to overwrite [{Fore.GREEN}Y{Style.RESET_ALL}/{Fore.RED}N{Style.RESET_ALL}]? ")
+    if overwrite_answer == "Y":
+        pass
+    elif overwrite_answer == "N":
+        print(f"[{Fore.CYAN}GL-isf/quit{Style.RESET_ALL}] Cannot continue further. {Style.BRIGHT}EXITING! ...{Style.RESET_ALL}")
+        exit()
+    else:
+        print(f"[{Fore.CYAN}GL-isf/query_check{Style.RESET_ALL}] {Fore.RED}Invalid answer!{Style.RESET_ALL} {Style.BRIGHT}EXITING! ...{Style.RESET_ALL}")
+        exit()
+else:
+    pass
 
 ticbig = time.time()
 
