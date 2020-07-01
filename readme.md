@@ -1,4 +1,4 @@
-# [GL-isf] Gamelist-import.scrape.format v0.10a by darkk!
+## [GL-isf] Gamelist-import.scrape.format v0.10a by darkk!
 
                         ________.____              .__         _____                    
                        /  _____/|    |             |__| ______/ ____\                   
@@ -11,3 +11,26 @@
 
 * This started as a personal project but it is morphing to something of an app
 * Lots of options on formatting, types of input and output are still limited but more will be added over time!
+
+####[ Help ]
+**[ Parameters ]**
+
+usage: GL-isf [-h] [-v] [-f [FORMAT]] input_file [output_file]
+
+positional arguments:
+  input_file            filename of gamelist to read
+  output_file           filename of formatted list to write (default: [.\gamelist.glf])
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
+  -f [FORMAT], --format [FORMAT]
+                        formatting of output_file [reddit] (default: [reddit])
+
+**[ Formatting ]**
+
+*input_file*
+1. text-store (default barter.vg export): game_name -- steam_url [Doom 8 - https://store.steampowered.com/app/xxxxxx/]
+
+*output_file*
+1. reddit: - game_title_with_steam_url - game_price(italics)  
