@@ -40,6 +40,7 @@ parser.add_argument("-f", "--format", help="formatting of output_file [reddit] (
 ### parser.add_argument("input", nargs="?", type=argparse.FileType('r'), help="filename of gamelist to read", default="gamelist.glf")
 ### parser.add_argument("-m", "--mono", help="output in monochrome (no colors)", action="store_false")
 args = parser.parse_args()
+autorecheck = False
 
 # print(args.input_file)
 # print(args.output_file)
@@ -221,6 +222,7 @@ for line in glf_reader:
     tic = time.time()
     num_processing += 1
     time_sum += last_tt
+    ar_text = f"{game_title} -- {steam_url}"
     if last_tt == 0:
         eta = "~"
         eta_avg = "~"
@@ -268,6 +270,13 @@ for line in glf_reader:
     if "catalogue" in aks_url:
         print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
         error_counter += 1
+        if autorecheck == "True":
+            os.remove(".\autorecheck")
+            ar_filewriter = open(".\autorecheck", "a")
+            ar_filewriter.write(str(ar_text) + "\n")
+            ar_filewriter.close()
+        else:
+            pass
     else:
         print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
     # print(aks_url)
@@ -297,6 +306,13 @@ for line in glf_reader:
         game_price_str = f"{Fore.RED}N/A{Style.RESET_ALL}"
         game_price_format = "MCN!"
         warning_counter += 1
+        if autorecheck == "True":
+            os.remove(".\autorecheck")
+            ar_filewriter = open(".\autorecheck", "a")
+            ar_filewriter.write(str(ar_text) + "\n")
+            ar_filewriter.close()
+        else:
+            pass
     else:
         print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
         game_price_str = f"{Fore.GREEN}{game_price}e{Style.RESET_ALL}"
@@ -318,6 +334,17 @@ for line in glf_reader:
 
     print(f" {Style.BRIGHT}-->{Style.RESET_ALL} [{Fore.CYAN}GL-isf/sgp-cmsg{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {game_price_str} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}. {Style.BRIGHT}{time_convert(tac)}{Style.RESET_ALL} elapsed and {Style.BRIGHT}{eta_avg}{Style.RESET_ALL} left.")
 glf_reader.close()
+
+if autorecheck == "True":
+    ar_filereader = open(".\autorecheck", "r")
+    for line in ar_filereader:
+        tic = time.time()
+        num_processing += 1
+        time_sum += last_tt
+    ar_filewriter.close()
+    os.remove(".\autorecheck")
+else:
+    pass
 
 tocbig = time.time()
 tictocbig = round(tocbig - ticbig, 2)
