@@ -59,12 +59,15 @@ app_ascii_alt = """
                              \______  |_______ \         |__/____  >|__|                               
                                     \/        \/                 \/                                    """
 print(f"{Fore.CYAN}{app_ascii_alt}{Style.RESET_ALL}")
+print(f"[{Fore.CYAN}GL-isf/init{Style.RESET_ALL}] Initializing ... ", flush=True, end="")
 if os.path.isfile(args.input_file):
     pass
 else:
+    print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
     print(f"[{Fore.CYAN}GL-isf/file_check{Style.RESET_ALL}] input_file {Style.BRIGHT}{args.input_file}{Style.RESET_ALL} {Fore.RED}does not exists!{Style.RESET_ALL}. Cannot continue further. {Style.BRIGHT}EXITING! ...{Style.RESET_ALL}")
     exit()
 if os.path.isfile(args.output_file):
+    print(f"[{Fore.YELLOW}WARNING!{Style.RESET_ALL}]")
     print(f"[{Fore.CYAN}GL-isf/file_check{Style.RESET_ALL}] output_file {Style.BRIGHT}{args.output_file}{Style.RESET_ALL} {Fore.RED}already exists!{Style.RESET_ALL}")
     overwrite_answer = input(f"[{Fore.CYAN}GL-isf/query{Style.RESET_ALL}] Would you like to overwrite [{Fore.GREEN}Y{Style.RESET_ALL}/{Fore.RED}N{Style.RESET_ALL}]? ")
     if overwrite_answer == "Y":
@@ -76,7 +79,8 @@ if os.path.isfile(args.output_file):
         print(f"[{Fore.CYAN}GL-isf/query_check{Style.RESET_ALL}] {Fore.RED}Invalid answer!{Style.RESET_ALL} {Style.BRIGHT}EXITING! ...{Style.RESET_ALL}")
         exit()
 else:
-    pass
+    print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
+print(f"[{Fore.CYAN}GL-isf/init_cmpt{Style.RESET_ALL}] Initialization completed! Welcome to {Style.BRIGHT}[{app_info.shortname}]{app_info.name}{Style.RESET_ALL} v{Style.BRIGHT}{app_info.version}{Style.RESET_ALL} by {Style.BRIGHT}{app_info.by}{Style.RESET_ALL}\n")
 
 ticbig = time.time()
 
@@ -196,7 +200,6 @@ output_file_str = args.output_file.ljust(18)
 format_str = args.format.ljust(11)
 pricetable_str = "none".ljust(18)
 num_games_str = str(num_games).ljust(5)
-print(f"[{Fore.CYAN}GL-isf/init{Style.RESET_ALL}] Initializing {Style.BRIGHT}{app_info.name}{Style.RESET_ALL} v{Style.BRIGHT}{app_info.version}{Style.RESET_ALL} by {Style.BRIGHT}{app_info.by}{Style.RESET_ALL} ... [{Fore.GREEN}OK!{Style.RESET_ALL}]\n")
 print(f"{Fore.CYAN}.: [{Style.RESET_ALL} {Fore.GREEN}input_file{Style.RESET_ALL}         {Fore.CYAN}] . [{Style.RESET_ALL} {Fore.YELLOW}output_file{Style.RESET_ALL}        {Fore.CYAN}] . [{Style.RESET_ALL} {Fore.BLUE}pricetable_file    {Style.RESET_ALL}{Fore.CYAN}] . [{Style.RESET_ALL} {Fore.MAGENTA}format{Style.RESET_ALL}      {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{Fore.RED}games{Style.RESET_ALL} {Fore.CYAN}] :.{Style.RESET_ALL}{Style.RESET_ALL}")
 print(f"{Fore.CYAN}.: [{Style.RESET_ALL} {Style.BRIGHT}{intput_file_str}{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{output_file_str}{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{pricetable_str} {Style.RESET_ALL}{Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{format_str}{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{num_games_str}{Style.RESET_ALL} {Fore.CYAN}] :.{Style.RESET_ALL}\n")
 print(f"")
