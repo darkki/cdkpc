@@ -58,7 +58,7 @@ app_ascii_alt = """
  /_____/  /_____/  /_____/  \    \_\  |    |___  /_____/ |  |\___ \ |  |     /_____/  /_____/  /_____/ 
                              \______  |_______ \         |__/____  >|__|                               
                                     \/        \/                 \/                                    """
-print(f"{Fore.CYAN}{app_ascii_alt}{Style.RESET_ALL}")
+print(f"\n{Fore.CYAN}{app_ascii_alt}{Style.RESET_ALL}")
 print(f"[{Fore.CYAN}GL-isf/init{Style.RESET_ALL}] Initializing ... ", flush=True, end="")
 if os.path.isfile(args.input_file):
     pass
@@ -114,7 +114,7 @@ def progress_bar(num_processing, num_games, eta):
     #     eta = round(((num_games - num_processing) * last_tt) / 60, 2)
     #     eta_avg = round(((num_games - num_processing) * (time_sum / num_processing)) / 60, 2)
     # stat_counter = f" [{Fore.GREEN}{num_processing}{Style.RESET_ALL}/{Style.BRIGHT}{Fore.YELLOW}{num_games}{Style.RESET_ALL} {Style.BRIGHT}{percentage_str}%{Style.RESET_ALL} - {Style.BRIGHT}{eta}m{Style.RESET_ALL} left] "
-    stat_counter = f" [{Fore.GREEN}{num_processing}{Style.RESET_ALL}/{Style.BRIGHT}{Fore.YELLOW}{num_games}{Style.RESET_ALL} {Style.BRIGHT}{percentage_str}%{Style.RESET_ALL} - {Style.BRIGHT}{eta}{Style.RESET_ALL} left] "
+    stat_counter = f" [{Fore.GREEN}{num_processing}{Style.RESET_ALL}/{Style.BRIGHT}{Fore.CYAN}{num_games}{Style.RESET_ALL} {Style.BRIGHT}{percentage_str}%{Style.RESET_ALL} - {Style.BRIGHT}{eta}{Style.RESET_ALL} left ({Fore.YELLOW}{warning_counter}{Style.RESET_ALL},{Fore.RED}{error_counter}{Style.RESET_ALL})] "
     # stat_counter = stat_counter_str.ljust(65)
     if percentage >= 0 and percentage < 5:
         return(f"[{Fore.GREEN}.         {Style.RESET_ALL}]{stat_counter}")
@@ -310,7 +310,7 @@ for line in glf_reader:
         pass
     filewriter.close()
 
-    print(f"{Style.BRIGHT}-->{Style.RESET_ALL} [{Fore.CYAN}GL-isf/sgp-cmsg{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {game_price_str} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}. {Style.BRIGHT}{time_convert(tac)}{Style.RESET_ALL} elapsed and {Style.BRIGHT}{eta_avg}{Style.RESET_ALL} left.")
+    print(f" {Style.BRIGHT}-->{Style.RESET_ALL} [{Fore.CYAN}GL-isf/sgp-cmsg{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {game_price_str} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}. {Style.BRIGHT}{time_convert(tac)}{Style.RESET_ALL} elapsed and {Style.BRIGHT}{eta_avg}{Style.RESET_ALL} left.")
 glf_reader.close()
 
 tocbig = time.time()
