@@ -73,9 +73,8 @@ else:
 if os.path.isfile(args.output_file):
     print(f"[{Fore.YELLOW}WARNING!{Style.RESET_ALL}]")
     print(f"[{Fore.CYAN}GL-isf/file_check{Style.RESET_ALL}] output_file {Style.BRIGHT}{args.output_file}{Style.RESET_ALL} {Fore.RED}already exists!{Style.RESET_ALL}")
-    overwrite_answer = "Y"
     overwrite_answer = input(f"[{Fore.CYAN}GL-isf/query{Style.RESET_ALL}] Would you like to overwrite [{Style.BRIGHT}Y{Style.RESET_ALL}/N]? ")
-    if overwrite_answer == "Y":
+    if overwrite_answer == "Y" or overwrite_answer == "":
         print(f"[{Fore.CYAN}GL-isf/del_file{Style.RESET_ALL}] {Fore.RED}deleting{Style.RESET_ALL} output_file {Style.BRIGHT}{args.output_file}{Style.RESET_ALL} ... ", flush=True, end="")
         os.remove(args.output_file)
         print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
@@ -112,7 +111,7 @@ def time_convert(seconds):
     else:
         return(f"{int(hour)}h {int(minutes)}m {int(seconds)}s")
 
-def progress_bar(num_processing, num_games, eta):
+def progress_bar(num_processing, num_games, eta, warning_counter, error_counter):
     percentage = num_processing / num_games * 100
     percentage_str = round(percentage, 1)
     # if last_tt == 0:
@@ -187,17 +186,17 @@ def tester():
             eta_avg = round((num_games - num_processing) * (time_sum / (num_processing - 1)), 2)
             eta_avg = time_convert(eta_avg)
 
-        print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/import{Style.RESET_ALL}] {Style.BRIGHT}Importing{Style.RESET_ALL} game info  ... ", flush=True, end="")
+        print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/import{Style.RESET_ALL}] {Style.BRIGHT}Importing{Style.RESET_ALL} game info  ... ", flush=True, end="")
         print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
-        print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/scrape{Style.RESET_ALL}] {Style.BRIGHT}Scraping{Style.RESET_ALL} AKS.url of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
+        print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/scrape{Style.RESET_ALL}] {Style.BRIGHT}Scraping{Style.RESET_ALL} AKS.url of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
         print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
         time.sleep(3)
-        print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/scrape{Style.RESET_ALL}] {Style.BRIGHT}Scraping{Style.RESET_ALL} AKS.lowest.price of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
+        print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/scrape{Style.RESET_ALL}] {Style.BRIGHT}Scraping{Style.RESET_ALL} AKS.lowest.price of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
         print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
         toc = time.time()
         tictoc = round(toc - tic, 2)
         last_tt = tictoc
-        print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/proc-m{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {Fore.YELLOW}{game_price}e{Style.RESET_ALL} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}")
+        print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/proc-m{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {Fore.YELLOW}{game_price}e{Style.RESET_ALL} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}")
     return()
 # print(tester())
 # exit()
@@ -209,131 +208,133 @@ pricetable_str = "none".ljust(18)
 num_games_str = str(num_games).ljust(5)
 print(f"{Fore.CYAN}.: [{Style.RESET_ALL} {Fore.GREEN}input_file{Style.RESET_ALL}         {Fore.CYAN}] . [{Style.RESET_ALL} {Fore.YELLOW}output_file{Style.RESET_ALL}        {Fore.CYAN}] . [{Style.RESET_ALL} {Fore.BLUE}pricetable_file    {Style.RESET_ALL}{Fore.CYAN}] . [{Style.RESET_ALL} {Fore.MAGENTA}format{Style.RESET_ALL}      {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{Fore.RED}games{Style.RESET_ALL} {Fore.CYAN}] :.{Style.RESET_ALL}{Style.RESET_ALL}")
 print(f"{Fore.CYAN}.: [{Style.RESET_ALL} {Style.BRIGHT}{intput_file_str}{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{output_file_str}{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{pricetable_str} {Style.RESET_ALL}{Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{format_str}{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{num_games_str}{Style.RESET_ALL} {Fore.CYAN}] :.{Style.RESET_ALL}\n")
-print(f"")
 
-num_processing = 0
-last_tt = 0
-time_sum = 0
-glf_reader = open(args.input_file, "r")
-error_counter = 0
-warning_counter = 0
-success_counter = 0
-for line in glf_reader:
-    tic = time.time()
-    num_processing += 1
-    time_sum += last_tt
-    ar_text = f"{game_title} -- {steam_url}"
-    if last_tt == 0:
-        eta = "~"
-        eta_avg = "~"
-    else:
-        eta = round(((num_games - num_processing) * last_tt) / 60, 2)
-        # eta_avg = round(((num_games - num_processing) * (time_sum / (num_processing - 1))) / 60, 2)
-        eta_avg = round((num_games - num_processing) * (time_sum / (num_processing - 1)), 2)
-        eta_avg = time_convert(eta_avg)
-    print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/import{Style.RESET_ALL}] {Style.BRIGHT}Importing{Style.RESET_ALL} game info  ... ", flush=True, end="")
-    stripped_line = line.strip()
-    game_title = ""
-    steam_url = ""
-    division = False
-    countdown = 4
-    for idx in range(len(stripped_line)):
-        char = stripped_line[idx]
-        try:
-            if stripped_line[idx + 1] == " " and stripped_line[idx + 2] == "-" and stripped_line[idx + 4] == " ":
-                division = True
-        except:
-            pass
-        if division == True:
-            countdown -= 1
-        if division == True and countdown < 0:
-            steam_url += char
-        elif countdown >= 3:
-            game_title += char
-    print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
-    # print(f"title: {game_title} url: {steam_url}")
-
-    print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/scrape{Style.RESET_ALL}] {Style.BRIGHT}Scraping{Style.RESET_ALL} AKS.url of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
-    driver = webdriver.Firefox()
-    driver.get("https://www.allkeyshop.com/blog/catalogue/")
-    elem = driver.find_element_by_id('search-form-keywords')
-    elem.clear()
-    elem.send_keys(game_title)
-    # time.sleep(2)
-    element = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "search-results-row-link")))
-    first_match = driver.find_element_by_class_name('search-results-row-link')
-    first_match.send_keys(Keys.RETURN)
-    time.sleep(0.5)
-    aks_url = driver.current_url
-    assert "No results found." not in driver.page_source
-    driver.close()
-    if "catalogue" in aks_url:
-        print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
-        error_counter += 1
-        if autorecheck == "True":
-            os.remove(".\autorecheck")
-            ar_filewriter = open(".\autorecheck", "a")
-            ar_filewriter.write(str(ar_text) + "\n")
-            ar_filewriter.close()
+def main_scraper(autorecheck):
+    num_processing = 0
+    last_tt = 0
+    time_sum = 0
+    glf_reader = open(args.input_file, "r")
+    error_counter = 0
+    warning_counter = 0
+    success_counter = 0
+    for line in glf_reader:
+        tic = time.time()
+        num_processing += 1
+        time_sum += last_tt
+        if last_tt == 0:
+            eta = "~"
+            eta_avg = "~"
         else:
-            pass
-    else:
+            eta = round(((num_games - num_processing) * last_tt) / 60, 2)
+            # eta_avg = round(((num_games - num_processing) * (time_sum / (num_processing - 1))) / 60, 2)
+            eta_avg = round((num_games - num_processing) * (time_sum / (num_processing - 1)), 2)
+            eta_avg = time_convert(eta_avg)
+        print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/import{Style.RESET_ALL}] {Style.BRIGHT}Importing{Style.RESET_ALL} game info  ... ", flush=True, end="")
+        stripped_line = line.strip()
+        game_title = ""
+        steam_url = ""
+        division = False
+        countdown = 4
+        for idx in range(len(stripped_line)):
+            char = stripped_line[idx]
+            try:
+                if stripped_line[idx + 1] == " " and stripped_line[idx + 2] == "-" and stripped_line[idx + 4] == " ":
+                    division = True
+            except:
+                pass
+            if division == True:
+                countdown -= 1
+            if division == True and countdown < 0:
+                steam_url += char
+            elif countdown >= 3:
+                game_title += char
         print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
-    # print(aks_url)
+        ar_text = f"{game_title} -- {steam_url}"
+        # print(f"title: {game_title} url: {steam_url}")
 
-    print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/scrape{Style.RESET_ALL}] {Style.BRIGHT}Scraping{Style.RESET_ALL} AKS.lowest.price of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
-    aks_proc = urllib.request.urlopen(aks_url).read()
-    soup = BeautifulSoup(aks_proc, "lxml")
-    pricefinder = soup.find(itemprop="lowPrice")
-    ff = False
-    sf = False
-    game_price = ""
-    for char in str(pricefinder):
-        if char == '"' and ff == False:
-            ff = True
-        elif char == '"' and ff == True:
-            sf = True
-        elif ff == True and sf == False:
-            game_price += char
+        print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/scrape{Style.RESET_ALL}] {Style.BRIGHT}Scraping{Style.RESET_ALL} AKS.url of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
+        driver = webdriver.Firefox()
+        driver.get("https://www.allkeyshop.com/blog/catalogue/")
+        elem = driver.find_element_by_id('search-form-keywords')
+        elem.clear()
+        elem.send_keys(game_title)
+        # time.sleep(2)
+        element = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "search-results-row-link")))
+        first_match = driver.find_element_by_class_name('search-results-row-link')
+        first_match.send_keys(Keys.RETURN)
+        time.sleep(0.5)
+        aks_url = driver.current_url
+        assert "No results found." not in driver.page_source
+        driver.close()
+        if "catalogue" in aks_url:
+            print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
+            error_counter += 1
+            if autorecheck == "True":
+                os.remove(".\autorecheck")
+                ar_filewriter = open(".\autorecheck", "a")
+                ar_filewriter.write(str(ar_text) + "\n")
+                ar_filewriter.close()
+            else:
+                pass
         else:
-            pass
-    if not game_price and "catalogue" in aks_url:
-        print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
-        game_price_str = f"{Fore.RED}N/A{Style.RESET_ALL}"
-        game_price_format = "MCN!"
-    elif not game_price:
-        print(f"[{Fore.YELLOW}NOT_FOUND!{Style.RESET_ALL}]")
-        game_price_str = f"{Fore.RED}N/A{Style.RESET_ALL}"
-        game_price_format = "MCN!"
-        warning_counter += 1
-        if autorecheck == "True":
-            os.remove(".\autorecheck")
-            ar_filewriter = open(".\autorecheck", "a")
-            ar_filewriter.write(str(ar_text) + "\n")
-            ar_filewriter.close()
+            print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
+        # print(aks_url)
+
+        print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/scrape{Style.RESET_ALL}] {Style.BRIGHT}Scraping{Style.RESET_ALL} AKS.lowest.price of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
+        aks_proc = urllib.request.urlopen(aks_url).read()
+        soup = BeautifulSoup(aks_proc, "lxml")
+        pricefinder = soup.find(itemprop="lowPrice")
+        ff = False
+        sf = False
+        game_price = ""
+        for char in str(pricefinder):
+            if char == '"' and ff == False:
+                ff = True
+            elif char == '"' and ff == True:
+                sf = True
+            elif ff == True and sf == False:
+                game_price += char
+            else:
+                pass
+        if not game_price and "catalogue" in aks_url:
+            print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
+            game_price_str = f"{Fore.RED}N/A{Style.RESET_ALL}"
+            game_price_format = "MCN!"
+        elif not game_price:
+            print(f"[{Fore.YELLOW}NOT_FOUND!{Style.RESET_ALL}]")
+            game_price_str = f"{Fore.RED}N/A{Style.RESET_ALL}"
+            game_price_format = "MCN!"
+            warning_counter += 1
+            if autorecheck == "True":
+                os.remove(".\autorecheck")
+                ar_filewriter = open(".\autorecheck", "a")
+                ar_filewriter.write(str(ar_text) + "\n")
+                ar_filewriter.close()
+            else:
+                pass
         else:
+            print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
+            game_price_str = f"{Fore.GREEN}{game_price}e{Style.RESET_ALL}"
+            success_counter += 1
+        toc = time.time()
+        tictoc = round(toc - tic, 2)
+        tac = round(toc - ticbig, 2)
+        last_tt = tictoc
+        # print(game_price)
+        # print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/proc-m{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {game_price_str} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}")
+
+        filewriter = open(args.output_file, "a")
+        if args.format == "reddit":
+            formatted_text = f"* [{game_title}]({steam_url}) - **{game_price}e**  "
+            filewriter.write(str(formatted_text) + "\n")
+        elif args.format == "phpbb":
             pass
-    else:
-        print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
-        game_price_str = f"{Fore.GREEN}{game_price}e{Style.RESET_ALL}"
-        success_counter += 1
-    toc = time.time()
-    tictoc = round(toc - tic, 2)
-    tac = round(toc - ticbig, 2)
-    last_tt = tictoc
-    # print(game_price)
-    # print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/proc-m{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {game_price_str} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}")
+        filewriter.close()
 
-    filewriter = open(args.output_file, "a")
-    if args.format == "reddit":
-        formatted_text = f"* [{game_title}]({steam_url}) - **{game_price}e**  "
-        filewriter.write(str(formatted_text) + "\n")
-    elif args.format == "phpbb":
-        pass
-    filewriter.close()
+        print(f" {Style.BRIGHT}-->{Style.RESET_ALL} [{Fore.CYAN}GL-isf/sgp-cmsg{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {game_price_str} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}. {Style.BRIGHT}{time_convert(tac)}{Style.RESET_ALL} elapsed and {Style.BRIGHT}{eta_avg}{Style.RESET_ALL} left.")
+    glf_reader.close()
 
-    print(f" {Style.BRIGHT}-->{Style.RESET_ALL} [{Fore.CYAN}GL-isf/sgp-cmsg{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {game_price_str} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}. {Style.BRIGHT}{time_convert(tac)}{Style.RESET_ALL} elapsed and {Style.BRIGHT}{eta_avg}{Style.RESET_ALL} left.")
-glf_reader.close()
+main_scraper()
 
 if autorecheck == "True":
     ar_filereader = open(".\autorecheck", "r")
