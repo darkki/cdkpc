@@ -75,7 +75,9 @@ if os.path.isfile(args.output_file):
     overwrite_answer = "Y"
     overwrite_answer = input(f"[{Fore.CYAN}GL-isf/query{Style.RESET_ALL}] Would you like to overwrite [{Style.BRIGHT}Y{Style.RESET_ALL}/N]? ")
     if overwrite_answer == "Y":
+        print(f"[{Fore.CYAN}GL-isf/del_file{Style.RESET_ALL}] {Fore.RED}deleting{Style.RESET_ALL} output_file {Style.BRIGHT}{args.output_file}{Style.RESET_ALL} ... ", flush=True, end="")
         os.remove(args.output_file)
+        print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
     elif overwrite_answer == "N":
         print(f"[{Fore.CYAN}GL-isf/quit{Style.RESET_ALL}] Cannot continue further. {Style.BRIGHT}EXITING! ...{Style.RESET_ALL}")
         exit()
