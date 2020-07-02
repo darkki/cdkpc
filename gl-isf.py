@@ -61,8 +61,8 @@ app_ascii_alt = """
  /_____/  /_____/  /_____/  \    \_\  |    |___  /_____/ |  |\___ \ |  |     /_____/  /_____/  /_____/ 
                              \______  |_______ \         |__/____  >|__|                               
                                     \/        \/                 \/                                    """
-print(f"\n{Fore.CYAN}{app_ascii_alt}{Style.RESET_ALL}")
-print(f"[{Fore.CYAN}GL-isf/init{Style.RESET_ALL}] Initializing ... ", flush=True, end="")
+print(f"{Fore.CYAN}{app_ascii_alt}{Style.RESET_ALL}")
+print(f"\n[{Fore.CYAN}GL-isf/init{Style.RESET_ALL}] Initializing ... ", flush=True, end="")
 if os.path.isfile(args.input_file):
     pass
 else:
@@ -72,7 +72,8 @@ else:
 if os.path.isfile(args.output_file):
     print(f"[{Fore.YELLOW}WARNING!{Style.RESET_ALL}]")
     print(f"[{Fore.CYAN}GL-isf/file_check{Style.RESET_ALL}] output_file {Style.BRIGHT}{args.output_file}{Style.RESET_ALL} {Fore.RED}already exists!{Style.RESET_ALL}")
-    overwrite_answer = input(f"[{Fore.CYAN}GL-isf/query{Style.RESET_ALL}] Would you like to overwrite [{Fore.GREEN}Y{Style.RESET_ALL}/{Fore.RED}N{Style.RESET_ALL}]? ")
+    overwrite_answer = "Y"
+    overwrite_answer = input(f"[{Fore.CYAN}GL-isf/query{Style.RESET_ALL}] Would you like to overwrite [{Style.BRIGHT}Y{Style.RESET_ALL}/N]? ")
     if overwrite_answer == "Y":
         os.remove(args.output_file)
     elif overwrite_answer == "N":
