@@ -1,4 +1,4 @@
-## [GL-isf] Gamelist-import.scrape.format v0.10a by darkk!
+## [GL-isf] Gamelist-import.scrape.format v0.22a by darkk!
 
                         ________.____              .__         _____                    
                        /  _____/|    |             |__| ______/ ____\                   
@@ -25,6 +25,7 @@ optional arguments:
   -v, --version         show program's version number and exit
   -f [FORMAT], --format [FORMAT]
                         formatting of output_file [reddit] (default: [reddit])
+  -ar, --autorecheck    enables automatic re-checking of failed scrapes
 
 **[ Help - Formatting ]**
 
@@ -32,8 +33,10 @@ optional arguments:
 1. text-store (default barter.vg export): game_name -- steam_url [Doom 8 - https://store.steampowered.com/app/xxxxxx/]
 
 *output_file*
-1. reddit: - game_title_with_steam_url - game_price(italics)  
+1. reddit: (unordered_list) game_title(linked_to_steam_url) - game_price(bold&italics)  
 
 **[ Help - Misc ]**
 
-- If price check has failed or price not found, then you should find games with price as "MCN!" in output_file and do manual check on those or re-run those items. (ability to do automatic re-check of failed items coming in future!)
+- If price check (and auto-recheck)has failed or price not found, then after processing you should find games with price as "MCN!" in output_file and do manual check on those or re-run those items.
+- If autorecheck is enabled, GL-isf will automatically try to re-scrape failed item once with more reliability (slightly slower too).
+- More input/output_file formats will be coming in future. Plus input_file format auto-detection and maybe configurable output formatting.

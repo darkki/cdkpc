@@ -1,3 +1,10 @@
+GL-isf v0.22a
+- Fixed WebDriverWait is not defined error
+- Fixed output_file overwrite query
+- Added auto_recheck feature
+- Improved scraping performance and reliability
+- Improved UI
+
 GL-isf v0.10a
 - Performance of URL scraping speed improved [major]
 - Added configuration display to UI

@@ -25,7 +25,7 @@ class app_info:
     shortname = "GL-isf"
     name = "GameList-import.scrape.format"
     description = "imports, scrapes and formats your game list!"
-    version = "0.10a"
+    version = "0.22a"
     by = "darkk!"
 
 parser = argparse.ArgumentParser(prog=app_info.shortname, description=app_info.description)
@@ -405,7 +405,7 @@ def main_scraper():
 
         filewriter = open(args.output_file, "a") # output_file formatting / writing
         if args.format == "reddit":
-            formatted_text = f"* [{game_title}]({steam_url}) - **{game_price}e**  "
+            formatted_text = f"* [{game_title}]({steam_url}) - **_{game_price}e**_  "
             filewriter.write(str(formatted_text) + "\n")
         elif args.format == "phpbb":
             pass
