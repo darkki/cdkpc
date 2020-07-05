@@ -118,7 +118,7 @@ def progress_bar(num_processing, num_games, eta):
     #     eta = round(((num_games - num_processing) * last_tt) / 60, 2)
     #     eta_avg = round(((num_games - num_processing) * (time_sum / num_processing)) / 60, 2)
     # stat_counter = f" [{Fore.GREEN}{num_processing}{Style.RESET_ALL}/{Style.BRIGHT}{Fore.YELLOW}{num_games}{Style.RESET_ALL} {Style.BRIGHT}{percentage_str}%{Style.RESET_ALL} - {Style.BRIGHT}{eta}m{Style.RESET_ALL} left] "
-    stat_counter = f" [{Fore.GREEN}{num_processing}{Style.RESET_ALL}/{Style.BRIGHT}{Fore.CYAN}{num_games}{Style.RESET_ALL} {Style.BRIGHT}{percentage_str}%{Style.RESET_ALL} - {Style.BRIGHT}{eta}{Style.RESET_ALL} left ({Fore.YELLOW}{warning_counter}{Style.RESET_ALL},{Fore.RED}{error_counter}{Style.RESET_ALL})] "
+    stat_counter = f" [{Fore.GREEN}{num_processing}{Style.RESET_ALL}/{Style.BRIGHT}{Fore.CYAN}{num_games}{Style.RESET_ALL} {Style.BRIGHT}{percentage_str}%{Style.RESET_ALL} - {Style.BRIGHT}{eta}{Style.RESET_ALL} left ({Fore.YELLOW}#{warning_counter}{Style.RESET_ALL},{Fore.RED}!{error_counter}{Style.RESET_ALL})] "
     # stat_counter = stat_counter_str.ljust(65)
     if percentage >= 0 and percentage < 5:
         return(f"[{Fore.GREEN}.         {Style.RESET_ALL}]{stat_counter}")
