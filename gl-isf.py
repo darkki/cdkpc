@@ -40,7 +40,7 @@ parser.add_argument("-f", "--format", help="formatting of output_file [reddit] (
 ### parser.add_argument("input", nargs="?", type=argparse.FileType('r'), help="filename of gamelist to read", default="gamelist.glf")
 ### parser.add_argument("-m", "--mono", help="output in monochrome (no colors)", action="store_false")
 args = parser.parse_args()
-autorecheck = False
+auto_recheck = False
 
 # print(args.input_file)
 # print(args.output_file)
@@ -269,13 +269,13 @@ def main_scraper():
         if "catalogue" in aks_url:
             print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
             error_counter += 1
-            if autorecheck == "True":
-                os.remove(".\autorecheck")
-                ar_filewriter = open(".\autorecheck", "a")
-                ar_filewriter.write(str(ar_text) + "\n")
-                ar_filewriter.close()
-            else:
-                pass
+            # if autorecheck == "True": #! deprecated, not using this method anymore!
+            #     os.remove(".\autorecheck")
+            #     ar_filewriter = open(".\autorecheck", "a")
+            #     ar_filewriter.write(str(ar_text) + "\n")
+            #     ar_filewriter.close()
+            # else:
+            #     pass
         else:
             print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
         # print(aks_url)
@@ -305,13 +305,13 @@ def main_scraper():
             game_price_str = f"{Fore.RED}N/A{Style.RESET_ALL}"
             game_price_format = "MCN!"
             warning_counter += 1
-            if autorecheck == "True":
-                os.remove(".\autorecheck")
-                ar_filewriter = open(".\autorecheck", "a")
-                ar_filewriter.write(str(ar_text) + "\n")
-                ar_filewriter.close()
-            else:
-                pass
+            # if autorecheck == "True": #! deprecated, not using this method anymore!
+            #     os.remove(".\autorecheck")
+            #     ar_filewriter = open(".\autorecheck", "a")
+            #     ar_filewriter.write(str(ar_text) + "\n")
+            #     ar_filewriter.close()
+            # else:
+            #     pass
         else:
             print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
             game_price_str = f"{Fore.GREEN}{game_price}e{Style.RESET_ALL}"
@@ -337,23 +337,23 @@ def main_scraper():
 
 success_counter, error_counter, warning_counter, num_games = main_scraper()
 
-if autorecheck == "True":
-    ar_filereader = open(".\autorecheck", "r")
-    for line in ar_filereader:
-        tic = time.time()
-        num_processing += 1
-        time_sum += last_tt
-    ar_filewriter.close()
-    os.remove(".\autorecheck")
-else:
-    pass
+# if autorecheck == "True": #! deprecated, not using this method anymore!
+#     ar_filereader = open(".\autorecheck", "r")
+#     for line in ar_filereader:
+#         tic = time.time()
+#         num_processing += 1
+#         time_sum += last_tt
+#     ar_filewriter.close()
+#     os.remove(".\autorecheck")
+# else:
+#     pass
 
 tocbig = time.time()
 tictocbig = round(tocbig - ticbig, 2)
 success_percentage = (success_counter + warning_counter) / num_games * 100
-if success_percentage >= 80:
+if success_percentage >= 90:
     success_percentage = f"{Fore.GREEN}{success_percentage}%{Style.RESET_ALL}"
-elif success_percentage >= 60:
+elif success_percentage >= 70:
     success_percentage = f"{Fore.YELLOW}{success_percentage}%{Style.RESET_ALL}"
 else:
     success_percentage = f"{Fore.RED}{success_percentage}%{Style.RESET_ALL}"
