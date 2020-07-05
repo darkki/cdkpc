@@ -35,12 +35,11 @@ parser.add_argument("input_file", help="filename of gamelist to read")
 parser.add_argument("output_file", nargs="?", help="filename of formatted list to write (default: [.\gamelist.glf])", default=".\gamelist.glf")
 # parser.add_argument("pricetable", nargs="?", help="filename of pricetable to read", default="none")
 parser.add_argument("-f", "--format", help="formatting of output_file [reddit] (default: [reddit])", default="reddit")
-# parser.add_argument("-a", "--auto", type=int, help="how many times to perform automatic re-check (default: [0])")
+parser.add_argument("-ar", "--autorecheck", help="enables automatic re-checking of failed scrapes", action="store_true")
 # parser.add_argument("-if", "--input_format", nargs="?", help="formatting of input_file [text-store, plaintext, html, markdown] (default: [text-store])", default="text-store")
 ### parser.add_argument("input", nargs="?", type=argparse.FileType('r'), help="filename of gamelist to read", default="gamelist.glf")
-### parser.add_argument("-m", "--mono", help="output in monochrome (no colors)", action="store_false")
+
 args = parser.parse_args()
-auto_recheck = False
 
 # print(args.input_file)
 # print(args.output_file)
@@ -206,11 +205,11 @@ output_file_str = args.output_file.ljust(18)
 format_str = args.format.ljust(11)
 pricetable_str = "none".ljust(18)
 num_games_str = str(num_games).ljust(5)
-if auto_recheck == True:
+if args.autorecheck == True:
     ar_option_str = f"on"
 else:
     ar_option_str = f"off"
-ar_option_str = ar_option_str.ljust(12)
+ar_option_str = ar_option_str.ljust(13)
 print(f"{Fore.CYAN}.: [{Style.RESET_ALL} {Fore.GREEN}input_file{Style.RESET_ALL}         {Fore.CYAN}] . [{Style.RESET_ALL} {Fore.YELLOW}output_file{Style.RESET_ALL}        {Fore.CYAN}] . [{Style.RESET_ALL} {Fore.BLUE}pricetable_file    {Style.RESET_ALL}{Fore.CYAN}] . [{Style.RESET_ALL} {Fore.MAGENTA}format{Style.RESET_ALL}      {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{Fore.RED}games{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}auto_recheck {Style.RESET_ALL} {Fore.CYAN}] :.{Style.RESET_ALL}{Style.RESET_ALL}")
 print(f"{Fore.CYAN}.: [{Style.RESET_ALL} {Style.BRIGHT}{intput_file_str}{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{output_file_str}{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{pricetable_str} {Style.RESET_ALL}{Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{format_str}{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{num_games_str}{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL}{Style.BRIGHT} {ar_option_str}{Style.RESET_ALL} {Fore.CYAN}] :.{Style.RESET_ALL}\n")
 
@@ -223,11 +222,12 @@ def main_scraper():
     warning_counter = 0
     success_counter = 0
     ar_counter = 0
-    ar_run = False
     for line in glf_reader:
         tic = time.time()
         num_processing += 1
         time_sum += last_tt
+        ar_run = False
+        ar_ran = False
         if last_tt == 0:
             eta = "~"
             eta_avg = "~"
@@ -276,7 +276,7 @@ def main_scraper():
         if "catalogue" in aks_url:
             print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
             error_counter += 1
-            if auto_recheck == True:
+            if args.autorecheck == True:
                 ar_run = True
             else:
                 pass
@@ -312,6 +312,7 @@ def main_scraper():
                 error_counter -= 1
                 print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
             ar_run = False
+            ar_ran = True
         else:
             pass
 
@@ -335,7 +336,7 @@ def main_scraper():
             print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
             game_price_str = f"{Fore.RED}N/A{Style.RESET_ALL}"
             game_price_format = "MCN!"
-            if auto_recheck == True:
+            if args.autorecheck == True:
                 ar_run = True
             else:
                 pass
@@ -344,7 +345,7 @@ def main_scraper():
             game_price_str = f"{Fore.RED}N/A{Style.RESET_ALL}"
             game_price_format = "MCN!"
             warning_counter += 1
-            if auto_recheck == True:
+            if args.autorecheck == True:
                 ar_run = True
             else:
                 pass
@@ -392,6 +393,7 @@ def main_scraper():
                 game_price_str = f"{Fore.GREEN}{game_price}e{Style.RESET_ALL}"
                 success_counter += 1
                 warning_counter -= 1
+                ar_ran = True
         else:
             pass
         toc = time.time()
@@ -409,7 +411,11 @@ def main_scraper():
             pass
         filewriter.close()
 
-        print(f" {Style.BRIGHT}-->{Style.RESET_ALL} [{Fore.CYAN}GL-isf/sgp-cmsg{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {game_price_str} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}. {Style.BRIGHT}{time_convert(tac)}{Style.RESET_ALL} elapsed and {Style.BRIGHT}{eta_avg}{Style.RESET_ALL} left.")
+        if ar_ran == True:
+            ar_symbol = f" ({Style.BRIGHT}{Fore.GREEN}AR{Style.RESET_ALL})"
+        else:
+            ar_symbol = ""
+        print(f" {Style.BRIGHT}-->{Style.RESET_ALL} [{Fore.CYAN}GL-isf/sgp-cmsg{Style.RESET_ALL}] Processed{ar_symbol} {Fore.BLUE}{game_title}{Style.RESET_ALL} / {game_price_str} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}. {Style.BRIGHT}{time_convert(tac)}{Style.RESET_ALL} elapsed and {Style.BRIGHT}{eta_avg}{Style.RESET_ALL} left.")
     glf_reader.close()
     return(success_counter, error_counter, warning_counter, ar_counter, num_games)
 
