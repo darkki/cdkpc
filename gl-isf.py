@@ -163,7 +163,7 @@ def progress_bar(num_processing, num_games, eta, warning_counter, error_counter)
     elif percentage >= 95 and percentage <= 100:
         return(f"[{Fore.GREEN}:::{Fore.YELLOW}::::{Fore.RED}:::{Style.RESET_ALL}]{stat_counter}")
 
-def tester():
+def ui_tester():
     num_processing = 0
     last_tt = 0
     time_sum = 0
@@ -198,7 +198,7 @@ def tester():
         last_tt = tictoc
         print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/proc-m{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {Fore.YELLOW}{game_price}e{Style.RESET_ALL} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}")
     return()
-# print(tester())
+# ui_tester()
 # exit()
 
 intput_file_str = args.input_file.ljust(18)
@@ -209,7 +209,7 @@ num_games_str = str(num_games).ljust(5)
 print(f"{Fore.CYAN}.: [{Style.RESET_ALL} {Fore.GREEN}input_file{Style.RESET_ALL}         {Fore.CYAN}] . [{Style.RESET_ALL} {Fore.YELLOW}output_file{Style.RESET_ALL}        {Fore.CYAN}] . [{Style.RESET_ALL} {Fore.BLUE}pricetable_file    {Style.RESET_ALL}{Fore.CYAN}] . [{Style.RESET_ALL} {Fore.MAGENTA}format{Style.RESET_ALL}      {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{Fore.RED}games{Style.RESET_ALL} {Fore.CYAN}] :.{Style.RESET_ALL}{Style.RESET_ALL}")
 print(f"{Fore.CYAN}.: [{Style.RESET_ALL} {Style.BRIGHT}{intput_file_str}{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{output_file_str}{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{pricetable_str} {Style.RESET_ALL}{Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{format_str}{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{num_games_str}{Style.RESET_ALL} {Fore.CYAN}] :.{Style.RESET_ALL}\n")
 
-def main_scraper(autorecheck):
+def main_scraper():
     num_processing = 0
     last_tt = 0
     time_sum = 0
@@ -333,8 +333,9 @@ def main_scraper(autorecheck):
 
         print(f" {Style.BRIGHT}-->{Style.RESET_ALL} [{Fore.CYAN}GL-isf/sgp-cmsg{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {game_price_str} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}. {Style.BRIGHT}{time_convert(tac)}{Style.RESET_ALL} elapsed and {Style.BRIGHT}{eta_avg}{Style.RESET_ALL} left.")
     glf_reader.close()
+    return(success_counter, error_counter, warning_counter, num_games)
 
-main_scraper()
+success_counter, error_counter, warning_counter, num_games = main_scraper()
 
 if autorecheck == "True":
     ar_filereader = open(".\autorecheck", "r")
