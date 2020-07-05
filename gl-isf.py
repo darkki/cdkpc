@@ -217,6 +217,8 @@ def main_scraper():
     error_counter = 0
     warning_counter = 0
     success_counter = 0
+    ar_counter = 0
+    ar_run = False
     for line in glf_reader:
         tic = time.time()
         num_processing += 1
@@ -269,6 +271,10 @@ def main_scraper():
         if "catalogue" in aks_url:
             print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
             error_counter += 1
+            if auto_recheck == True:
+                ar_run = True
+            else:
+                pass
             # if autorecheck == "True": #! deprecated, not using this method anymore!
             #     os.remove(".\autorecheck")
             #     ar_filewriter = open(".\autorecheck", "a")
@@ -279,6 +285,30 @@ def main_scraper():
         else:
             print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
         # print(aks_url)
+        if ar_run == True: # doing the auto_recheck re-scrape (more patient processing too)
+            ar_counter += 1
+            print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/ar_scrape{Style.RESET_ALL}] [{Style.BRIGHT}{Fore.GREEN}AUTO_RECHECK!{Style.RESET_ALL}] {Style.BRIGHT}Re-Scraping{Style.RESET_ALL} AKS.url of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
+            driver = webdriver.Firefox()
+            driver.get("https://www.allkeyshop.com/blog/catalogue/")
+            elem = driver.find_element_by_id('search-form-keywords')
+            elem.clear()
+            elem.send_keys(game_title)
+            time.sleep(0.5)
+            element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "search-results-row-link")))
+            first_match = driver.find_element_by_class_name('search-results-row-link')
+            first_match.send_keys(Keys.RETURN)
+            time.sleep(1)
+            aks_url = driver.current_url
+            assert "No results found." not in driver.page_source
+            driver.close()
+            if "catalogue" in aks_url:
+                print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
+            else:
+                error_counter -= 1
+                print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
+            ar_run = False
+        else:
+            pass
 
         print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/scrape{Style.RESET_ALL}] {Style.BRIGHT}Scraping{Style.RESET_ALL} AKS.lowest.price of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
         aks_proc = urllib.request.urlopen(aks_url).read()
@@ -300,11 +330,19 @@ def main_scraper():
             print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
             game_price_str = f"{Fore.RED}N/A{Style.RESET_ALL}"
             game_price_format = "MCN!"
+            if auto_recheck == True:
+                ar_run = True
+            else:
+                pass
         elif not game_price:
             print(f"[{Fore.YELLOW}NOT_FOUND!{Style.RESET_ALL}]")
             game_price_str = f"{Fore.RED}N/A{Style.RESET_ALL}"
             game_price_format = "MCN!"
             warning_counter += 1
+            if auto_recheck == True:
+                ar_run = True
+            else:
+                pass
             # if autorecheck == "True": #! deprecated, not using this method anymore!
             #     os.remove(".\autorecheck")
             #     ar_filewriter = open(".\autorecheck", "a")
@@ -316,6 +354,41 @@ def main_scraper():
             print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
             game_price_str = f"{Fore.GREEN}{game_price}e{Style.RESET_ALL}"
             success_counter += 1
+        if ar_run == True: # doing the auto_recheck re-scrape (more patient processing too)
+            ar_counter += 1
+            print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/ar_scrape{Style.RESET_ALL}] [{Style.BRIGHT}{Fore.GREEN}AUTO_RECHECK!{Style.RESET_ALL}]  {Style.BRIGHT}Re-Scraping{Style.RESET_ALL} AKS.lowest.price of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
+            aks_proc = urllib.request.urlopen(aks_url).read()
+            time.sleep(0.1)
+            soup = BeautifulSoup(aks_proc, "lxml")
+            time.sleep(0.1)
+            pricefinder = soup.find(itemprop="lowPrice")
+            ff = False
+            sf = False
+            game_price = ""
+            for char in str(pricefinder):
+                if char == '"' and ff == False:
+                    ff = True
+                elif char == '"' and ff == True:
+                    sf = True
+                elif ff == True and sf == False:
+                    game_price += char
+                else:
+                    pass
+            if not game_price and "catalogue" in aks_url:
+                print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
+                game_price_str = f"{Fore.RED}N/A{Style.RESET_ALL}"
+                game_price_format = "MCN!"
+            elif not game_price:
+                print(f"[{Fore.YELLOW}NOT_FOUND!{Style.RESET_ALL}]")
+                game_price_str = f"{Fore.RED}N/A{Style.RESET_ALL}"
+                game_price_format = "MCN!"
+            else:
+                print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
+                game_price_str = f"{Fore.GREEN}{game_price}e{Style.RESET_ALL}"
+                success_counter += 1
+                warning_counter -= 1
+        else:
+            pass
         toc = time.time()
         tictoc = round(toc - tic, 2)
         tac = round(toc - ticbig, 2)
@@ -323,7 +396,7 @@ def main_scraper():
         # print(game_price)
         # print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/proc-m{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {game_price_str} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}")
 
-        filewriter = open(args.output_file, "a")
+        filewriter = open(args.output_file, "a") # output_file formatting / writing
         if args.format == "reddit":
             formatted_text = f"* [{game_title}]({steam_url}) - **{game_price}e**  "
             filewriter.write(str(formatted_text) + "\n")
@@ -333,9 +406,9 @@ def main_scraper():
 
         print(f" {Style.BRIGHT}-->{Style.RESET_ALL} [{Fore.CYAN}GL-isf/sgp-cmsg{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {game_price_str} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}. {Style.BRIGHT}{time_convert(tac)}{Style.RESET_ALL} elapsed and {Style.BRIGHT}{eta_avg}{Style.RESET_ALL} left.")
     glf_reader.close()
-    return(success_counter, error_counter, warning_counter, num_games)
+    return(success_counter, error_counter, warning_counter, ar_counter, num_games)
 
-success_counter, error_counter, warning_counter, num_games = main_scraper()
+success_counter, error_counter, warning_counter, ar_counter, num_games = main_scraper()
 
 # if autorecheck == "True": #! deprecated, not using this method anymore!
 #     ar_filereader = open(".\autorecheck", "r")
@@ -358,11 +431,11 @@ elif success_percentage >= 70:
 else:
     success_percentage = f"{Fore.RED}{success_percentage}%{Style.RESET_ALL}"
 if success_percentage <= 99:
-    mcn_text = f'Please find "{Style.BRIGHT}MCN!{Style.RESET_ALL}" in {Style.BRIGHT}{args.output_file}{Style.RESET_ALL} for prices needed for manual check! (or do an re-run for those items / enable auto-recheck!)'
+    mcn_text = f'\n[{Fore.CYAN}GL-isf/mcn_txt{Style.RESET_ALL}] Please find "{Style.BRIGHT}MCN!{Style.RESET_ALL}" in {Style.BRIGHT}{args.output_file}{Style.RESET_ALL} for prices needed for manual check! (or do an re-run for those items / enable auto-recheck!)'
 else:
     mcn_text = ""
 
-print(f"\n[{Fore.CYAN}GL-isf/fin{Style.RESET_ALL}] Operation {Style.BRIGHT}completed{Style.RESET_ALL} in {Style.BRIGHT}{time_convert(tictocbig)}{Style.RESET_ALL}! Success ratio is {success_percentage} - {Fore.GREEN}{success_counter}{Style.RESET_ALL} succesful, {Fore.YELLOW}{warning_counter}{Style.RESET_ALL} warnings and {Fore.RED}{error_counter}{Style.RESET_ALL} errors.  Your data is saved in {Style.BRIGHT}args.output_file{Style.RESET_ALL}. {mcn_text}\n")
+print(f"\n[{Fore.CYAN}GL-isf/fin{Style.RESET_ALL}] Operation {Style.BRIGHT}completed{Style.RESET_ALL} in {Style.BRIGHT}{time_convert(tictocbig)}{Style.RESET_ALL}! Success ratio is {success_percentage} - {Fore.GREEN}{success_counter}{Style.RESET_ALL} succesful, {Fore.YELLOW}{warning_counter}{Style.RESET_ALL} warnings and {Fore.RED}{error_counter}{Style.RESET_ALL} errors. Auto-Recheck ran {Style.BRIGHT}{ar_counter}{Style.RESET_ALL} times.  Your data is saved in {Style.BRIGHT}args.output_file{Style.RESET_ALL}. {mcn_text}\n")
 print(f"{Fore.CYAN}{app_ascii}{Style.RESET_ALL}")
 print(f"Thanks for using {Style.BRIGHT}{app_info.name}{Style.RESET_ALL} v{Style.BRIGHT}{app_info.version}{Style.RESET_ALL} by {Style.BRIGHT}{app_info.by}{Style.RESET_ALL}")
 
