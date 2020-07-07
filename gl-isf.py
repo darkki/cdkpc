@@ -309,7 +309,7 @@ def main_scraper(): # main_scraper function
         ff = False
         sf = False
         game_price = ""
-        for char in str(pricefinder):
+        for char in str(pricefinder): # converting game price to usable formatting
             if char == '"' and ff == False:
                 ff = True
             elif char == '"' and ff == True:
@@ -318,7 +318,7 @@ def main_scraper(): # main_scraper function
                 game_price += char
             else:
                 pass
-        if not game_price and "catalogue" in aks_url:
+        if not game_price and "catalogue" in aks_url: # printing failed/not_found prices and adding MCN! tag to output_file
             print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
             game_price_str = f"{Fore.RED}N/A{Style.RESET_ALL}"
             game_price_format = "MCN!"
@@ -345,6 +345,7 @@ def main_scraper(): # main_scraper function
         else:
             print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
             game_price_str = f"{Fore.GREEN}{game_price}e{Style.RESET_ALL}"
+            game_price_format = game_price
             success_counter += 1
         if ar_run == True: # doing the auto_recheck re-scrape if enabled/needed  (more patient processing too)
             ar_counter += 1
@@ -357,7 +358,7 @@ def main_scraper(): # main_scraper function
             ff = False
             sf = False
             game_price = ""
-            for char in str(pricefinder):
+            for char in str(pricefinder): # converting game price to usable formatting (AR)
                 if char == '"' and ff == False:
                     ff = True
                 elif char == '"' and ff == True:
@@ -366,7 +367,7 @@ def main_scraper(): # main_scraper function
                     game_price += char
                 else:
                     pass
-            if not game_price and "catalogue" in aks_url:
+            if not game_price and "catalogue" in aks_url: # printing failed/not_found prices and adding MCN! tag to output_file (AR)
                 print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
                 game_price_str = f"{Fore.RED}N/A{Style.RESET_ALL}"
                 game_price_format = "MCN!"
@@ -377,6 +378,7 @@ def main_scraper(): # main_scraper function
             else:
                 print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
                 game_price_str = f"{Fore.GREEN}{game_price}e{Style.RESET_ALL}"
+                game_price_format = game_price
                 success_counter += 1
                 warning_counter -= 1
                 ar_ran = True
@@ -389,7 +391,7 @@ def main_scraper(): # main_scraper function
 
         filewriter = open(args.output_file, "a") # output_file formatting / writing
         if args.format == "reddit":
-            formatted_text = f"* [{game_title}]({steam_url}) - **_{game_price}e**_  "
+            formatted_text = f"* [{game_title}]({steam_url}) - **_{game_price_format}e**_  "
             filewriter.write(str(formatted_text) + "\n")
         elif args.format == "phpbb":
             pass
