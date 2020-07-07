@@ -14,18 +14,18 @@
 
 **[ Help - Parameters ]**
 
-usage: GL-isf [-h] [-v] [-f [FORMAT]] input_file [output_file]
+usage: GL-isf [-h] [-v] [-f [FORMAT]] input_file [output_file]\
 
-positional arguments:
-  input_file            filename of gamelist to read
-  output_file           filename of formatted list to write (default: [.\gamelist.glf])
+positional arguments:\
+  input_file            filename of gamelist to read\
+  output_file           filename of formatted list to write (default: [.\gamelist.glf])\
 
-optional arguments:
-  -h, --help            show this help message and exit
-  -v, --version         show program's version number and exit
-  -f [FORMAT], --format [FORMAT]
-                        formatting of output_file [reddit] (default: [reddit])
-  -ar, --autorecheck    enables automatic re-checking of failed scrapes
+optional arguments:\
+  -h, --help            show this help message and exit\
+  -v, --version         show program's version number and exit\
+  -f [FORMAT], --format [FORMAT]\
+                        formatting of output_file [reddit] (default: [reddit])\
+  -ar, --autorecheck    enables automatic re-checking of failed scrapes\
 
 **[ Help - Formatting ]**
 
