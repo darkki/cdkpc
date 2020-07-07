@@ -25,6 +25,8 @@ optional arguments:\
   -v, --version         show program's version number and exit\
   -f [FORMAT], --format [FORMAT]\
                         formatting of output_file [reddit] (default: [reddit])\
+  -if [INPUT_FORMAT], --input_format [INPUT_FORMAT] 
+                        formatting of input_file [text-store] (default: [text-store]) 
   -ar, --autorecheck    enables automatic re-checking of failed scrapes 
 
 **[ Help - Formatting ]**
