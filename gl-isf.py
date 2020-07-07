@@ -21,7 +21,7 @@ from colorama import Fore,Back,Style
 
 import argparse
 
-class app_info: # basic app_info strings
+class app_info:
     shortname = "GL-isf"
     name = "GameList-import.scrape.format"
     description = "imports, scrapes and formats your game list!"
@@ -30,20 +30,15 @@ class app_info: # basic app_info strings
 
 parser = argparse.ArgumentParser(prog=app_info.shortname, description=app_info.description) # argparse parser config
 parser.add_argument("-v", "--version", action="version", version="[GL-isf] GameList-import.scrape.format v" + app_info.version + " by " + app_info.by)
-# print(f"[{app_info.shortname}] {app_info.name} v{app_info.version} by {app_info.by}")
+# print(f"[{app_info.shortname}] {app_info.name} v{app_info.version} by {app_info.by}") #* like previous line, but using (f")
 parser.add_argument("input_file", help="filename of gamelist to read")
 parser.add_argument("output_file", nargs="?", help="filename of formatted list to write (default: [.\gamelist.glf])", default=".\gamelist.glf")
 # parser.add_argument("pricetable", nargs="?", help="filename of pricetable to read", default="none")
 parser.add_argument("-f", "--format", help="formatting of output_file [reddit] (default: [reddit])", default="reddit")
 parser.add_argument("-ar", "--autorecheck", help="enables automatic re-checking of failed scrapes", action="store_true")
 # parser.add_argument("-if", "--input_format", nargs="?", help="formatting of input_file [text-store, plaintext, html, markdown] (default: [text-store])", default="text-store")
-### parser.add_argument("input", nargs="?", type=argparse.FileType('r'), help="filename of gamelist to read", default="gamelist.glf")
 
 args = parser.parse_args()
-
-# print(args.input_file)
-# print(args.output_file)
-# print(args.format)
 
 app_ascii = """
                       ________.____              .__         _____ 
@@ -114,14 +109,7 @@ def time_convert(seconds): # function that converts seconds to "XXh XXm XXs" for
 def progress_bar(num_processing, num_games, eta, warning_counter, error_counter): # function that displays progress_bar and stat_counter
     percentage = num_processing / num_games * 100
     percentage_str = round(percentage, 1)
-    # if last_tt == 0:
-    #     eta = "~"
-    # else:
-    #     eta = round(((num_games - num_processing) * last_tt) / 60, 2)
-    #     eta_avg = round(((num_games - num_processing) * (time_sum / num_processing)) / 60, 2)
-    # stat_counter = f" [{Fore.GREEN}{num_processing}{Style.RESET_ALL}/{Style.BRIGHT}{Fore.YELLOW}{num_games}{Style.RESET_ALL} {Style.BRIGHT}{percentage_str}%{Style.RESET_ALL} - {Style.BRIGHT}{eta}m{Style.RESET_ALL} left] "
     stat_counter = f" [{Fore.GREEN}{num_processing}{Style.RESET_ALL}/{Style.BRIGHT}{Fore.CYAN}{num_games}{Style.RESET_ALL} {Style.BRIGHT}{percentage_str}%{Style.RESET_ALL} - {Style.BRIGHT}{eta}{Style.RESET_ALL} left ({Fore.YELLOW}#{warning_counter}{Style.RESET_ALL},{Fore.RED}!{error_counter}{Style.RESET_ALL})] "
-    # stat_counter = stat_counter_str.ljust(65)
     if percentage >= 0 and percentage < 5:
         return(f"[{Fore.GREEN}.         {Style.RESET_ALL}]{stat_counter}")
     elif percentage >= 5 and percentage < 10:
@@ -182,7 +170,6 @@ def ui_tester(): # ui_tester function used for dev/debuggings purposes
             eta_avg = "~"
         else:
             eta = round((num_games - num_processing * last_tt) / 60, 2)
-            # eta_avg = round(((num_games - num_processing) * (time_sum / (num_processing - 1))) / 60, 2)
             eta_avg = round((num_games - num_processing) * (time_sum / (num_processing - 1)), 2)
             eta_avg = time_convert(eta_avg)
 
@@ -198,7 +185,7 @@ def ui_tester(): # ui_tester function used for dev/debuggings purposes
         last_tt = tictoc
         print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/proc-m{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {Fore.YELLOW}{game_price}e{Style.RESET_ALL} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}")
     return()
-# ui_tester()
+# ui_tester() #? enable to use ui_tester
 # exit()
 
 intput_file_str = args.input_file.ljust(18)
@@ -234,7 +221,6 @@ def main_scraper(): # main_scraper function
             eta_avg = "~"
         else:
             eta = round(((num_games - num_processing) * last_tt) / 60, 2)
-            # eta_avg = round(((num_games - num_processing) * (time_sum / (num_processing - 1))) / 60, 2)
             eta_avg = round((num_games - num_processing) * (time_sum / (num_processing - 1)), 2)
             eta_avg = time_convert(eta_avg)
         print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/import{Style.RESET_ALL}] {Style.BRIGHT}Importing{Style.RESET_ALL} game info  ... ", flush=True, end="")
@@ -258,7 +244,6 @@ def main_scraper(): # main_scraper function
                 game_title += char
         print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
         ar_text = f"{game_title} -- {steam_url}"
-        # print(f"title: {game_title} url: {steam_url}")
 
         print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/scrape{Style.RESET_ALL}] {Style.BRIGHT}Scraping{Style.RESET_ALL} AKS.url of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
         driver = webdriver.Firefox() # scraping correct url for game via selenium
@@ -401,8 +386,6 @@ def main_scraper(): # main_scraper function
         tictoc = round(toc - tic, 2)
         tac = round(toc - ticbig, 2)
         last_tt = tictoc
-        # print(game_price)
-        # print(f"{progress_bar(num_processing, num_games, eta_avg)}[{Fore.CYAN}GL-isf/proc-m{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {game_price_str} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}")
 
         filewriter = open(args.output_file, "a") # output_file formatting / writing
         if args.format == "reddit":
@@ -451,7 +434,7 @@ print(f"\n[{Fore.CYAN}GL-isf/fin{Style.RESET_ALL}] Operation {Style.BRIGHT}compl
 print(f"{Fore.CYAN}{app_ascii}{Style.RESET_ALL}")
 print(f"Thanks for using {Style.BRIGHT}{app_info.name}{Style.RESET_ALL} v{Style.BRIGHT}{app_info.version}{Style.RESET_ALL} by {Style.BRIGHT}{app_info.by}{Style.RESET_ALL}")
 
-# exstr = "Supraland -- https://store.steampowered.com/app/813630/"
+# exstr = "Supraland -- https://store.steampowered.com/app/813630/" #* early code for reference
 # g_title = ""
 # s_url = ""
 # division = False
