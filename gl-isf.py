@@ -21,14 +21,14 @@ from colorama import Fore,Back,Style
 
 import argparse
 
-class app_info:
+class app_info: # basic app_info strings
     shortname = "GL-isf"
     name = "GameList-import.scrape.format"
     description = "imports, scrapes and formats your game list!"
     version = "0.22a"
     by = "darkk!"
 
-parser = argparse.ArgumentParser(prog=app_info.shortname, description=app_info.description)
+parser = argparse.ArgumentParser(prog=app_info.shortname, description=app_info.description) # argparse parser config
 parser.add_argument("-v", "--version", action="version", version="[GL-isf] GameList-import.scrape.format v" + app_info.version + " by " + app_info.by)
 # print(f"[{app_info.shortname}] {app_info.name} v{app_info.version} by {app_info.by}")
 parser.add_argument("input_file", help="filename of gamelist to read")
@@ -61,7 +61,8 @@ app_ascii_alt = """
  /_____/  /_____/  /_____/  \    \_\  |    |___  /_____/ |  |\___ \ |  |     /_____/  /_____/  /_____/ 
                              \______  |_______ \         |__/____  >|__|                               
                                     \/        \/                 \/                                    """
-print(f"{Fore.CYAN}{app_ascii_alt}{Style.RESET_ALL}")
+
+print(f"{Fore.CYAN}{app_ascii_alt}{Style.RESET_ALL}") # initialization
 print(f"\n[{Fore.CYAN}GL-isf/init{Style.RESET_ALL}] Initializing ... ", flush=True, end="")
 if os.path.isfile(args.input_file):
     pass
@@ -89,13 +90,13 @@ print(f"[{Fore.CYAN}GL-isf/init_cmpt{Style.RESET_ALL}] Initialization completed!
 
 ticbig = time.time()
 
-filereader = open(args.input_file, "r")
+filereader = open(args.input_file, "r") # calculates number of games(lines) in input_file
 num_games = 0
 for line in filereader:
     num_games += 1
 filereader.close()
 
-def time_convert(seconds):
+def time_convert(seconds): # function that converts seconds to "XXh XXm XXs" format
     seconds = seconds % (24 * 3600)
     hour = seconds // 3600
     seconds %= 3600
@@ -110,7 +111,7 @@ def time_convert(seconds):
     else:
         return(f"{int(hour)}h {int(minutes)}m {int(seconds)}s")
 
-def progress_bar(num_processing, num_games, eta, warning_counter, error_counter):
+def progress_bar(num_processing, num_games, eta, warning_counter, error_counter): # function that displays progress_bar and stat_counter
     percentage = num_processing / num_games * 100
     percentage_str = round(percentage, 1)
     # if last_tt == 0:
@@ -162,7 +163,7 @@ def progress_bar(num_processing, num_games, eta, warning_counter, error_counter)
     elif percentage >= 95 and percentage <= 100:
         return(f"[{Fore.GREEN}:::{Fore.YELLOW}::::{Fore.RED}:::{Style.RESET_ALL}]{stat_counter}")
 
-def ui_tester():
+def ui_tester(): # ui_tester function used for dev/debuggings purposes
     num_processing = 0
     last_tt = 0
     time_sum = 0
@@ -213,7 +214,7 @@ ar_option_str = ar_option_str.ljust(13)
 print(f"{Fore.CYAN}.: [{Style.RESET_ALL} {Fore.GREEN}input_file{Style.RESET_ALL}         {Fore.CYAN}] . [{Style.RESET_ALL} {Fore.YELLOW}output_file{Style.RESET_ALL}        {Fore.CYAN}] . [{Style.RESET_ALL} {Fore.BLUE}pricetable_file    {Style.RESET_ALL}{Fore.CYAN}] . [{Style.RESET_ALL} {Fore.MAGENTA}format{Style.RESET_ALL}      {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{Fore.RED}games{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}auto_recheck {Style.RESET_ALL} {Fore.CYAN}] :.{Style.RESET_ALL}{Style.RESET_ALL}")
 print(f"{Fore.CYAN}.: [{Style.RESET_ALL} {Style.BRIGHT}{intput_file_str}{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{output_file_str}{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{pricetable_str} {Style.RESET_ALL}{Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{format_str}{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{num_games_str}{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL}{Style.BRIGHT} {ar_option_str}{Style.RESET_ALL} {Fore.CYAN}] :.{Style.RESET_ALL}\n")
 
-def main_scraper():
+def main_scraper(): # main_scraper function
     num_processing = 0
     last_tt = 0
     time_sum = 0
@@ -222,7 +223,7 @@ def main_scraper():
     warning_counter = 0
     success_counter = 0
     ar_counter = 0
-    for line in glf_reader:
+    for line in glf_reader: # reading necessary data from input_file
         tic = time.time()
         num_processing += 1
         time_sum += last_tt
@@ -260,7 +261,7 @@ def main_scraper():
         # print(f"title: {game_title} url: {steam_url}")
 
         print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/scrape{Style.RESET_ALL}] {Style.BRIGHT}Scraping{Style.RESET_ALL} AKS.url of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
-        driver = webdriver.Firefox()
+        driver = webdriver.Firefox() # scraping correct url for game via selenium
         driver.get("https://www.allkeyshop.com/blog/catalogue/")
         elem = driver.find_element_by_id('search-form-keywords')
         elem.clear()
@@ -290,7 +291,7 @@ def main_scraper():
         else:
             print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
         # print(aks_url)
-        if ar_run == True: # doing the auto_recheck re-scrape (more patient processing too)
+        if ar_run == True: # doing the auto_recheck re-scrape if enabled/needed (more patient processing too)
             ar_counter += 1
             print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/ar_scrape{Style.RESET_ALL}] [{Style.BRIGHT}{Fore.GREEN}AUTO_RECHECK!{Style.RESET_ALL}] {Style.BRIGHT}Re-Scraping{Style.RESET_ALL} AKS.url of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
             driver = webdriver.Firefox()
@@ -317,7 +318,7 @@ def main_scraper():
             pass
 
         print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/scrape{Style.RESET_ALL}] {Style.BRIGHT}Scraping{Style.RESET_ALL} AKS.lowest.price of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
-        aks_proc = urllib.request.urlopen(aks_url).read()
+        aks_proc = urllib.request.urlopen(aks_url).read() # scraping price for game via bs4
         soup = BeautifulSoup(aks_proc, "lxml")
         pricefinder = soup.find(itemprop="lowPrice")
         ff = False
@@ -360,7 +361,7 @@ def main_scraper():
             print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
             game_price_str = f"{Fore.GREEN}{game_price}e{Style.RESET_ALL}"
             success_counter += 1
-        if ar_run == True: # doing the auto_recheck re-scrape (more patient processing too)
+        if ar_run == True: # doing the auto_recheck re-scrape if enabled/needed  (more patient processing too)
             ar_counter += 1
             print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/ar_scrape{Style.RESET_ALL}] [{Style.BRIGHT}{Fore.GREEN}AUTO_RECHECK!{Style.RESET_ALL}]  {Style.BRIGHT}Re-Scraping{Style.RESET_ALL} AKS.lowest.price of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
             aks_proc = urllib.request.urlopen(aks_url).read()
