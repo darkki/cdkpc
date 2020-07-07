@@ -37,7 +37,6 @@ parser.add_argument("output_file", nargs="?", help="filename of formatted list t
 parser.add_argument("-f", "--format", help="formatting of output_file [reddit] (default: [reddit])", default="reddit")
 parser.add_argument("-ar", "--autorecheck", help="enables automatic re-checking of failed scrapes", action="store_true")
 # parser.add_argument("-if", "--input_format", nargs="?", help="formatting of input_file [text-store, plaintext, html, markdown] (default: [text-store])", default="text-store")
-
 args = parser.parse_args()
 
 app_ascii = """
@@ -59,7 +58,7 @@ app_ascii_alt = """
 
 print(f"{Fore.CYAN}{app_ascii_alt}{Style.RESET_ALL}") # initialization
 print(f"\n[{Fore.CYAN}GL-isf/init{Style.RESET_ALL}] Initializing ... ", flush=True, end="")
-if os.path.isfile(args.input_file):
+if os.path.isfile(args.input_file): # checks if input_file and output_file exists plus overwrite prompts for output_file
     pass
 else:
     print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
@@ -97,7 +96,7 @@ def time_convert(seconds): # function that converts seconds to "XXh XXm XXs" for
     seconds %= 3600
     minutes = seconds // 60
     seconds %= 60
-    if int(hour) == 0 and int(minutes) == 0 and int(seconds) == 0:
+    if int(hour) == 0 and int(minutes) == 0 and int(seconds) == 0: # prints only applicable formats plus infinity
         return("~")
     elif int(hour) == 0 and int(minutes) == 0:
         return(f"{int(seconds)}s")
@@ -188,7 +187,7 @@ def ui_tester(): # ui_tester function used for dev/debuggings purposes
 # ui_tester() #? enable to use ui_tester
 # exit()
 
-intput_file_str = args.input_file.ljust(18)
+intput_file_str = args.input_file.ljust(18) # options/settings ui
 output_file_str = args.output_file.ljust(18)
 format_str = args.format.ljust(11)
 pricetable_str = "none".ljust(18)
@@ -205,18 +204,18 @@ def main_scraper(): # main_scraper function
     num_processing = 0
     last_tt = 0
     time_sum = 0
-    glf_reader = open(args.input_file, "r")
     error_counter = 0
     warning_counter = 0
     success_counter = 0
     ar_counter = 0
+    glf_reader = open(args.input_file, "r")
     for line in glf_reader: # reading necessary data from input_file
         tic = time.time()
         num_processing += 1
         time_sum += last_tt
         ar_run = False
         ar_ran = False
-        if last_tt == 0:
+        if last_tt == 0: # eta calculations
             eta = "~"
             eta_avg = "~"
         else:
@@ -229,7 +228,7 @@ def main_scraper(): # main_scraper function
         steam_url = ""
         division = False
         countdown = 4
-        for idx in range(len(stripped_line)):
+        for idx in range(len(stripped_line)): # game title and steam_url importing from stripped_line
             char = stripped_line[idx]
             try:
                 if stripped_line[idx + 1] == " " and stripped_line[idx + 2] == "-" and stripped_line[idx + 4] == " ":
@@ -246,20 +245,20 @@ def main_scraper(): # main_scraper function
         ar_text = f"{game_title} -- {steam_url}"
 
         print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/scrape{Style.RESET_ALL}] {Style.BRIGHT}Scraping{Style.RESET_ALL} AKS.url of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
-        driver = webdriver.Firefox() # scraping correct url for game via selenium
+        driver = webdriver.Firefox() # scraping correct scrape_url for game via selenium
         driver.get("https://www.allkeyshop.com/blog/catalogue/")
         elem = driver.find_element_by_id('search-form-keywords')
         elem.clear()
         elem.send_keys(game_title)
         # time.sleep(2)
-        element = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "search-results-row-link")))
+        element = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "search-results-row-link"))) #* 5 second inclusive wait
         first_match = driver.find_element_by_class_name('search-results-row-link')
         first_match.send_keys(Keys.RETURN)
-        time.sleep(0.5)
-        aks_url = driver.current_url
+        time.sleep(0.5) # additional sleep for enhanced success. #? is it possible to do this via selenium waits?
+        aks_url = driver.current_url #* url for price_scraping
         assert "No results found." not in driver.page_source
         driver.close()
-        if "catalogue" in aks_url:
+        if "catalogue" in aks_url: # scraping failed & activating autorecheck if needed/enabled
             print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
             error_counter += 1
             if args.autorecheck == True:
@@ -275,8 +274,7 @@ def main_scraper(): # main_scraper function
             #     pass
         else:
             print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
-        # print(aks_url)
-        if ar_run == True: # doing the auto_recheck re-scrape if enabled/needed (more patient processing too)
+        if ar_run == True: # doing the auto_recheck re-scrape if enabled/needed (more patient processing too) [copy/pasted code from before] #? convert these to function?
             ar_counter += 1
             print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/ar_scrape{Style.RESET_ALL}] [{Style.BRIGHT}{Fore.GREEN}AUTO_RECHECK!{Style.RESET_ALL}] {Style.BRIGHT}Re-Scraping{Style.RESET_ALL} AKS.url of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
             driver = webdriver.Firefox()
@@ -305,7 +303,7 @@ def main_scraper(): # main_scraper function
         print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/scrape{Style.RESET_ALL}] {Style.BRIGHT}Scraping{Style.RESET_ALL} AKS.lowest.price of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
         aks_proc = urllib.request.urlopen(aks_url).read() # scraping price for game via bs4
         soup = BeautifulSoup(aks_proc, "lxml")
-        pricefinder = soup.find(itemprop="lowPrice")
+        pricefinder = soup.find(itemprop="lowPrice") #* lowest price for game (raw_format)
         ff = False
         sf = False
         game_price = ""
@@ -347,7 +345,7 @@ def main_scraper(): # main_scraper function
             game_price_str = f"{Fore.GREEN}{game_price}e{Style.RESET_ALL}"
             game_price_format = game_price
             success_counter += 1
-        if ar_run == True: # doing the auto_recheck re-scrape if enabled/needed  (more patient processing too)
+        if ar_run == True: # doing the auto_recheck re-scrape if enabled/needed  (more patient processing too) [copy/pasted code from before] #? convert these to function?
             ar_counter += 1
             print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/ar_scrape{Style.RESET_ALL}] [{Style.BRIGHT}{Fore.GREEN}AUTO_RECHECK!{Style.RESET_ALL}]  {Style.BRIGHT}Re-Scraping{Style.RESET_ALL} AKS.lowest.price of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
             aks_proc = urllib.request.urlopen(aks_url).read()
@@ -397,7 +395,7 @@ def main_scraper(): # main_scraper function
             pass
         filewriter.close()
 
-        if ar_ran == True:
+        if ar_ran == True: # printing completed processing this item msg
             ar_symbol = f" ({Style.BRIGHT}{Fore.GREEN}AR{Style.RESET_ALL})"
         else:
             ar_symbol = ""
@@ -418,9 +416,9 @@ success_counter, error_counter, warning_counter, ar_counter, num_games = main_sc
 # else:
 #     pass
 
-tocbig = time.time()
+tocbig = time.time() # printing final messages
 tictocbig = round(tocbig - ticbig, 2)
-success_percentage = (success_counter + warning_counter) / num_games * 100
+success_percentage = (success_counter + warning_counter) / num_games * 100 # success percentage calculations and colorization
 if success_percentage >= 90:
     success_percentage = f"{Fore.GREEN}{success_percentage}%{Style.RESET_ALL}"
 elif success_percentage >= 70:
