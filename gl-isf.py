@@ -35,8 +35,8 @@ parser.add_argument("input_file", help="filename of gamelist to read")
 parser.add_argument("output_file", nargs="?", help="filename of formatted list to write (default: [.\gamelist.glf])", default=".\gamelist.glf")
 # parser.add_argument("pricetable", nargs="?", help="filename of pricetable to read", default="none")
 parser.add_argument("-f", "--format", help="formatting of output_file [reddit] (default: [reddit])", default="reddit")
+parser.add_argument("-if", "--input_format", nargs="?", help="formatting of input_file [text-store] (default: [text-store])", default="text-store")
 parser.add_argument("-ar", "--autorecheck", help="enables automatic re-checking of failed scrapes", action="store_true")
-# parser.add_argument("-if", "--input_format", nargs="?", help="formatting of input_file [text-store, plaintext, html, markdown] (default: [text-store])", default="text-store")
 args = parser.parse_args()
 
 app_ascii = """
@@ -228,20 +228,23 @@ def main_scraper(): # main_scraper function
         steam_url = ""
         division = False
         countdown = 4
-        for idx in range(len(stripped_line)): # game title and steam_url importing from stripped_line
-            char = stripped_line[idx]
-            try:
-                if stripped_line[idx + 1] == " " and stripped_line[idx + 2] == "-" and stripped_line[idx + 4] == " ":
-                    division = True
-            except:
-                pass
-            if division == True:
-                countdown -= 1
-            if division == True and countdown < 0:
-                steam_url += char
-            elif countdown >= 3:
-                game_title += char
-        print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
+        if args.input_format == "text-store": # checks what input_format to use
+            for idx in range(len(stripped_line)): # game title and steam_url importing from stripped_line via text-store format
+                char = stripped_line[idx]
+                try:
+                    if stripped_line[idx + 1] == " " and stripped_line[idx + 2] == "-" and stripped_line[idx + 4] == " ":
+                        division = True
+                except:
+                    pass
+                if division == True:
+                    countdown -= 1
+                if division == True and countdown < 0:
+                    steam_url += char
+                elif countdown >= 3:
+                    game_title += char
+            print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
+        else:
+            print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
         ar_text = f"{game_title} -- {steam_url}"
 
         print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/scrape{Style.RESET_ALL}] {Style.BRIGHT}Scraping{Style.RESET_ALL} AKS.url of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
