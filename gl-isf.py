@@ -184,10 +184,10 @@ def ui_tester(): # ui_tester function used for dev/debuggings purposes
         last_tt = tictoc
         print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/proc-m{Style.RESET_ALL}] Processed {Fore.BLUE}{game_title}{Style.RESET_ALL} / {Fore.YELLOW}{game_price}e{Style.RESET_ALL} in {Style.BRIGHT}{tictoc}s{Style.RESET_ALL}")
     return()
-# ui_tester() #? enable to use ui_tester
+# ui_tester() #* enable to use ui_tester
 # exit()
 
-intput_file_str = args.input_file.ljust(18) # options/settings ui
+intput_file_str = args.input_file.ljust(18) # print options/settings
 output_file_str = args.output_file.ljust(18)
 format_str = args.format.ljust(11)
 pricetable_str = "none".ljust(18)
@@ -200,7 +200,7 @@ ar_option_str = ar_option_str.ljust(13)
 print(f"{Fore.CYAN}.: [{Style.RESET_ALL} {Fore.GREEN}input_file{Style.RESET_ALL}         {Fore.CYAN}] . [{Style.RESET_ALL} {Fore.YELLOW}output_file{Style.RESET_ALL}        {Fore.CYAN}] . [{Style.RESET_ALL} {Fore.BLUE}pricetable_file    {Style.RESET_ALL}{Fore.CYAN}] . [{Style.RESET_ALL} {Fore.MAGENTA}format{Style.RESET_ALL}      {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{Fore.RED}games{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}auto_recheck {Style.RESET_ALL} {Fore.CYAN}] :.{Style.RESET_ALL}{Style.RESET_ALL}")
 print(f"{Fore.CYAN}.: [{Style.RESET_ALL} {Style.BRIGHT}{intput_file_str}{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{output_file_str}{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{pricetable_str} {Style.RESET_ALL}{Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{format_str}{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL} {Style.BRIGHT}{num_games_str}{Style.RESET_ALL} {Fore.CYAN}] . [{Style.RESET_ALL}{Style.BRIGHT} {ar_option_str}{Style.RESET_ALL} {Fore.CYAN}] :.{Style.RESET_ALL}\n")
 
-def main_scraper(): # main_scraper function
+def main_scraper(): # main_scraper function (import data, scrape url, scrape price and format/export data)
     num_processing = 0
     last_tt = 0
     time_sum = 0
@@ -209,7 +209,7 @@ def main_scraper(): # main_scraper function
     success_counter = 0
     ar_counter = 0
     glf_reader = open(args.input_file, "r")
-    for line in glf_reader: # reading necessary data from input_file
+    for line in glf_reader: # reading data from input_file line by line
         tic = time.time()
         num_processing += 1
         time_sum += last_tt
@@ -245,6 +245,7 @@ def main_scraper(): # main_scraper function
             print(f"[{Fore.GREEN}OK!{Style.RESET_ALL}]")
         else:
             print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
+            exit()
         ar_text = f"{game_title} -- {steam_url}"
 
         print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/scrape{Style.RESET_ALL}] {Style.BRIGHT}Scraping{Style.RESET_ALL} AKS.url of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
@@ -254,12 +255,12 @@ def main_scraper(): # main_scraper function
         elem.clear()
         elem.send_keys(game_title)
         # time.sleep(2)
-        element = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "search-results-row-link"))) #* 5 second inclusive wait
-        first_match = driver.find_element_by_class_name('search-results-row-link')
+        element = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "search-results-row-link"))) # 5 second inclusive wait
+        first_match = driver.find_element_by_class_name('search-results-row-link') # best match for game_title
         first_match.send_keys(Keys.RETURN)
         time.sleep(0.5) # additional sleep for enhanced success. #? is it possible to do this via selenium waits?
-        aks_url = driver.current_url #* url for price_scraping
-        assert "No results found." not in driver.page_source
+        aks_url = driver.current_url # game_title aks-url used for price_scraping
+        assert "No results found." not in driver.page_source #? is this needed?
         driver.close()
         if "catalogue" in aks_url: # scraping failed & activating autorecheck if needed/enabled
             print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
@@ -306,11 +307,11 @@ def main_scraper(): # main_scraper function
         print(f"{progress_bar(num_processing, num_games, eta_avg, warning_counter, error_counter)}[{Fore.CYAN}GL-isf/scrape{Style.RESET_ALL}] {Style.BRIGHT}Scraping{Style.RESET_ALL} AKS.lowest.price of {Fore.BLUE}{game_title}{Style.RESET_ALL}  ... ", flush=True, end="")
         aks_proc = urllib.request.urlopen(aks_url).read() # scraping price for game via bs4
         soup = BeautifulSoup(aks_proc, "lxml")
-        pricefinder = soup.find(itemprop="lowPrice") #* lowest price for game (raw_format)
+        pricefinder = soup.find(itemprop="lowPrice") # lowest price for game (raw_format)
         ff = False
         sf = False
         game_price = ""
-        for char in str(pricefinder): # converting game price to usable formatting
+        for char in str(pricefinder): # converting game price to usable formatting (xxx.xx)
             if char == '"' and ff == False:
                 ff = True
             elif char == '"' and ff == True:
@@ -319,7 +320,7 @@ def main_scraper(): # main_scraper function
                 game_price += char
             else:
                 pass
-        if not game_price and "catalogue" in aks_url: # printing failed/not_found prices and adding MCN! tag to output_file
+        if not game_price and "catalogue" in aks_url: # printing failed/not_found prices and adding MCN! tag to output_file #* if modifying this code, also check copypasted AR ones below!
             print(f"[{Fore.RED}FAIL!{Style.RESET_ALL}]")
             game_price_str = f"{Fore.RED}N/A{Style.RESET_ALL}"
             game_price_format = "MCN!"
