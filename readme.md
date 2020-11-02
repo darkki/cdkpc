@@ -1,4 +1,4 @@
-## [GL-isf] Gamelist-import.scrape.format v0.22a by darkk!
+## [GL-isf] Gamelist-import.scrape.format v0.23a by darkk!
 
                         ________.____              .__         _____                    
                        /  _____/|    |             |__| ______/ ____\                   

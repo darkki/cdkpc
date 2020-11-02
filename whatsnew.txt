@@ -1,3 +1,8 @@
+GL-isf v0.23a
+- Fixed data saved output print at "operation completed" line
+- Fixed TypeError when success ratio was 100% at program completion
+- Improved UI
+
 GL-isf v0.22a
 - Fixed WebDriverWait is not defined error
 - Fixed output_file overwrite query
