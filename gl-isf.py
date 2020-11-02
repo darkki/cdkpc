@@ -105,7 +105,7 @@ def time_convert(seconds): # function that converts seconds to "XXh XXm XXs" for
     else:
         return(f"{int(hour)}h {int(minutes)}m {int(seconds)}s")
 
-def progress_bar(num_processing, num_games, eta, warning_counter, error_counter): # function that displays progress_bar and stat_counter
+def progress_bar(num_processing, num_games, eta, warning_counter, error_counter): # function that displays progress_bar and stat_line
     percentage = num_processing / num_games * 100
     percentage_str = round(percentage, 1)
     stat_counter = f" [{Fore.GREEN}{num_processing}{Style.RESET_ALL}/{Style.BRIGHT}{Fore.CYAN}{num_games}{Style.RESET_ALL} {Style.BRIGHT}{percentage_str}%{Style.RESET_ALL} - {Style.BRIGHT}{eta}{Style.RESET_ALL} left ({Fore.YELLOW}#{warning_counter}{Style.RESET_ALL},{Fore.RED}!{error_counter}{Style.RESET_ALL})] "
@@ -424,19 +424,19 @@ tocbig = time.time() # printing final messages
 tictocbig = round(tocbig - ticbig, 2)
 success_percentage = (success_counter + warning_counter) / num_games * 100 # success percentage calculations and colorization
 if success_percentage >= 90:
-    success_percentage = f"{Fore.GREEN}{success_percentage}%{Style.RESET_ALL}"
+    success_percentage_op = f"{Fore.GREEN}{success_percentage}%{Style.RESET_ALL}"
 elif success_percentage >= 70:
-    success_percentage = f"{Fore.YELLOW}{success_percentage}%{Style.RESET_ALL}"
+    success_percentage_op = f"{Fore.YELLOW}{success_percentage}%{Style.RESET_ALL}"
 else:
-    success_percentage = f"{Fore.RED}{success_percentage}%{Style.RESET_ALL}"
-if success_percentage <= 99:
+    success_percentage_op = f"{Fore.RED}{success_percentage}%{Style.RESET_ALL}"
+if success_percentage != 100:
     mcn_text = f'\n[{Fore.CYAN}GL-isf/mcn_txt{Style.RESET_ALL}] Please find "{Style.BRIGHT}MCN!{Style.RESET_ALL}" in {Style.BRIGHT}{args.output_file}{Style.RESET_ALL} for prices needed for manual check! (or do an re-run for those items / enable auto-recheck!)'
 else:
     mcn_text = ""
 
-print(f"\n[{Fore.CYAN}GL-isf/fin{Style.RESET_ALL}] Operation {Style.BRIGHT}completed{Style.RESET_ALL} in {Style.BRIGHT}{time_convert(tictocbig)}{Style.RESET_ALL}! Success ratio is {success_percentage} - {Fore.GREEN}{success_counter}{Style.RESET_ALL} succesful, {Fore.YELLOW}{warning_counter}{Style.RESET_ALL} warnings and {Fore.RED}{error_counter}{Style.RESET_ALL} errors. Auto-Recheck ran {Style.BRIGHT}{ar_counter}{Style.RESET_ALL} times.  Your data is saved in {Style.BRIGHT}args.output_file{Style.RESET_ALL}. {mcn_text}\n")
+print(f"\n[{Fore.CYAN}GL-isf/fin{Style.RESET_ALL}] Operation {Style.BRIGHT}completed{Style.RESET_ALL} in {Style.BRIGHT}{time_convert(tictocbig)}{Style.RESET_ALL}! Success ratio is {success_percentage_op} - {Fore.GREEN}{success_counter}{Style.RESET_ALL} succesful, {Fore.YELLOW}{warning_counter}{Style.RESET_ALL} warnings and {Fore.RED}{error_counter}{Style.RESET_ALL} errors. Auto-Recheck ran {Style.BRIGHT}{ar_counter}{Style.RESET_ALL} times.  Your data is saved in {Style.BRIGHT}{args.output_file}{Style.RESET_ALL}. {mcn_text}\n")
+print(f" {Fore.CYAN}-{Style.RESET_ALL} Thanks for using {Style.BRIGHT}{app_info.name}{Style.RESET_ALL} v{Style.BRIGHT}{app_info.version}{Style.RESET_ALL} by {Style.BRIGHT}{app_info.by}{Style.RESET_ALL}")
 print(f"{Fore.CYAN}{app_ascii}{Style.RESET_ALL}")
-print(f"Thanks for using {Style.BRIGHT}{app_info.name}{Style.RESET_ALL} v{Style.BRIGHT}{app_info.version}{Style.RESET_ALL} by {Style.BRIGHT}{app_info.by}{Style.RESET_ALL}")
 
 # exstr = "Supraland -- https://store.steampowered.com/app/813630/" #* early code for reference
 # g_title = ""
